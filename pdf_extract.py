@@ -9,13 +9,16 @@ def create_csv(path:str) -> None:
     export_path = get_filename_without_extension(path) + ".csv"
     data.export(export_path, f = "csv", compress=False)
 
-def get_month(path:str)-> None:
-    pattern = r'^Période du \d{2}/\d{2}/\d{4} au \d{2}/\d{2}/\d{4}$'
+def get_month(path:str)-> tuple:
+    pattern = r"[0-3][0-9]\/([0-3][0-9])\/\d+ au [0-3][0-9]\/[0-3][0-9]\/\d+"
     with open(f"{get_filename_without_extension(path)}-page-1-table-1.csv", encoding='utf8') as file:
-        for line in file:
-            if re.match(pattern, line):
-                print(line.strip())
-                break
+        first_line = file.readline().strip()
+        second_line = file.readline().strip()
+        #breakpoint()
+        m = re.search(pattern, second_line)
+        period = m.group()
+        month = m.group(1)
+        return (month, period)
 
 
 if __name__ == "__main__":
