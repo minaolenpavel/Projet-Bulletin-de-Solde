@@ -1,6 +1,7 @@
 import camelot.io as camelot
-import os, re
+import re
 from utils import filename_without_extension
+from models import SoldeMois
 
 def create_csv(path:str) -> None:
     '''
@@ -16,17 +17,28 @@ def get_period(path:str)-> tuple:
     '''
     pattern = r"[0-3][0-9]\/([0-3][0-9])\/(\d+) au [0-3][0-9]\/[0-3][0-9]\/\d+"
     with open(f"{filename_without_extension(path)}-page-1-table-1.csv", encoding='utf8') as file:
-        first_line = file.readline().strip()
-        second_line = file.readline().strip()
+        first_line = file.readline().strip() # Unused line just passing it
+        second_line = file.readline().strip() # Relevant info is line 2
         #breakpoint()
         m = re.search(pattern, second_line)
         period = m.group()
         month = m.group(1)
         year = m.group(2)
-        return (period, month, year)
+        return (period, int(month), int(year))
+    
+def get_amount(path:str) -> float:
+    pattern = r'(Montant : (\d+(,\d+)?))'
+    with open(f"{filename_without_extension(path)}-page-1-table-4.csv", encoding='utf8') as file:
+        content = file.read()
+        print(content)
+        m = re.search(pattern, content)
+        amount = m.group(2)
+        return float(amount.replace(",",".")) # Caprice
 
 
 if __name__ == "__main__":
     path = "test.pdf"
-    create_csv(path)
-    get_period(path)
+    print(get_amount(path))
+    #create_csv(path)
+    #get_period(path)
+    #test = SoldeMois()

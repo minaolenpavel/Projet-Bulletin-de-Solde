@@ -1,11 +1,6 @@
-import time
-from itertools import chain
 import email
 import imaplib
-from imapclient import imap_utf7
-import base64
 import os
-import re
 import secret
 
 # VARS
