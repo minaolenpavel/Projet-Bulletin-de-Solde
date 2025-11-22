@@ -1,5 +1,6 @@
 secret.py
-.pdf
-.csv
+*.pdf
+*.csv
 __pycache__
 venv/
+pyvenv.cfg
