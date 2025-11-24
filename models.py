@@ -8,4 +8,6 @@ class SoldeMois:
         self.month_text = month_name_from_number(month)
         self.year = year
         self.path = path # Path to original document
-        
+    
+    def __repr__(self):
+        return f"Pour la période du {self.period}, solde de {self.month_text}, payé {self.amount}€"

@@ -13,7 +13,8 @@ def create_csv(path:str) -> None:
 
 def get_period(path:str)-> tuple:
     '''
-    Output is a tuple as (period, month, year)
+    Input is the original filename, example : '2025_11.pdf'. 
+    \nOutput is a tuple as (period, month, year)
     '''
     pattern = r"[0-3][0-9]\/([0-3][0-9])\/(\d+) au [0-3][0-9]\/[0-3][0-9]\/\d+"
     with open(f"{filename_without_extension(path)}-page-1-table-1.csv", encoding='utf8') as file:
@@ -27,10 +28,12 @@ def get_period(path:str)-> tuple:
         return (period, int(month), int(year))
     
 def get_amount(path:str) -> float:
+    '''
+    Input is the original filename, example : '2025_11.pdf'.
+    '''
     pattern = r'(Montant : (\d+(,\d+)?))'
     with open(f"{filename_without_extension(path)}-page-1-table-4.csv", encoding='utf8') as file:
         content = file.read()
-        print(content)
         m = re.search(pattern, content)
         amount = m.group(2)
         return float(amount.replace(",",".")) # Caprice
