@@ -1,0 +1,26 @@
+﻿@page "/"
+@using Bulletin_solde.Data
+@using Bulletin_solde.Components
+@using Microsoft.EntityFrameworkCore
+@using System.IO
+@inject Data.ApplicationDbContext DbContext
+@inject IJSRuntime JS
+
+<script src="js/site.js"></script>
+
+<PageTitle>Bulletins de solde</PageTitle>
+
+<InputFile OnChange="LoadJson"/>
+
+
+
+@code{
+    private async Task LoadJson(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file != null)
+        {
+            
+        }
+    }
+}
