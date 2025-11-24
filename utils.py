@@ -1,4 +1,4 @@
-import os
+import os, json
 
 def filename_without_extension(path:str) -> str:
     '''
@@ -7,7 +7,7 @@ def filename_without_extension(path:str) -> str:
     '''
     return os.path.splitext(os.path.basename(path))[0]
 
-def month_name_from_number(month_num:int):
+def month_name_from_number(month_num:int) -> str:
     month_dict = {
                 1 : "janvier",
                 2 : "février",
@@ -22,3 +22,22 @@ def month_name_from_number(month_num:int):
                 11 : "novembre",
                 12 : "décembre"}
     return month_dict[month_num]
+
+def is_valid_json(data:str) -> bool:
+    try:
+        json_object = json.loads(data)
+        return True
+    except:
+        return False
+
+def write_json(path:str, data:str):
+    if not is_valid_json(data):
+        print("data is not json")
+    else:
+        json_path = filename_without_extension(path) + ".json"
+        with open(json_path, "w", encoding='utf8') as json_file:
+            json_file.write(data)
+
+def json_serialize(bulletin) -> str:
+    data = json.dumps(bulletin.__dict__, ensure_ascii=False, indent=4)
+    return data

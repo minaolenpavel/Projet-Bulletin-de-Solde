@@ -17,7 +17,7 @@ def get_period(path:str)-> tuple:
     \nOutput is a tuple as (period, month, year)
     '''
     pattern = r"[0-3][0-9]\/([0-3][0-9])\/(\d+) au [0-3][0-9]\/[0-3][0-9]\/\d+"
-    with open(f"{filename_without_extension(path)}-page-1-table-1.csv", encoding='utf8') as file:
+    with open(f"{filename_without_extension(path)}-page-1-table-1.csv", mode = "r", encoding='utf8') as file:
         first_line = file.readline().strip() # Unused line just passing it
         second_line = file.readline().strip() # Relevant info is line 2
         #breakpoint()
@@ -32,7 +32,7 @@ def get_amount(path:str) -> float:
     Input is the original filename, example : '2025_11.pdf'.
     '''
     pattern = r'(Montant : (\d+(,\d+)?))'
-    with open(f"{filename_without_extension(path)}-page-1-table-4.csv", encoding='utf8') as file:
+    with open(f"{filename_without_extension(path)}-page-1-table-4.csv", mode = "r",  encoding='utf8') as file:
         content = file.read()
         m = re.search(pattern, content)
         amount = m.group(2)
