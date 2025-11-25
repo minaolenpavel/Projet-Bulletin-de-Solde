@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite("Data Source=bulletins.db"));
-builder.Services.AddScoped<JsonServices>();
+builder.Services.AddScoped<BulletinServices>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -7,43 +7,59 @@
 @using System.IO
 @using System.Text.Json.Nodes
 @inject Data.ApplicationDbContext DbContext
-@inject JsonServices jsonServices
+@inject BulletinServices bServices
 @inject IJSRuntime JS
 @rendermode InteractiveServer
 
 <h3>Liste des bulletins</h3>
 
-<InputFile OnChange="HandleFileSelected" accept=".json"/>
+<InputFile OnChange="HandleFileSelected" accept=".json" multiple/>
 
 @code {
     private List<Bulletin> bulletins;
-    public string json;
-    public Bulletin? bulletin;
-    protected override async Task OnInitializedAsync()
+    protected async Task InitBulletinsList()
     {
-        bulletins = await jsonServices.GetAllBulletins();
+        bulletins = await bServices.GetAllBulletins();
     }
 
     protected async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
-        var file = e.File;
-
-        using var stream = file.OpenReadStream();
-        using var reader = new StreamReader(stream);
-        json = await reader.ReadToEndAsync();
-        try
+        if (e.FileCount == 1)
         {
-            bulletin = jsonServices.ParseJson(json);
-            bulletins.Add(bulletin);
-            if(bulletin != null)
+            var file = e.File;
+
+            using var stream = file.OpenReadStream();
+            using var reader = new StreamReader(stream);
+            string json = await reader.ReadToEndAsync();
+            try
             {
-                await DbContext.Bulletins.AddAsync(bulletin);
-                await DbContext.SaveChangesAsync();
+                Bulletin? bulletin = bServices.ParseJson(json);
+                if (bulletin != null)
+                {
+                    await DbContext.Bulletins.AddAsync(bulletin);
+                    await DbContext.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error parsing json" + e);
             }
         }
-        catch(Exception ex)
+        else
         {
-            Console.WriteLine("Error parsing json" + e);
+            var files = e.GetMultipleFiles();
+            foreach(var file in files)
+            {
+                using var stream = file.OpenReadStream();
+                using var reader = new StreamReader(stream);
+                string json = await reader.ReadToEndAsync();
+                Bulletin? bulletin = bServices.ParseJson(json);
+                if (bulletin != null)
+                {
+                    await DbContext.Bulletins.AddAsync(bulletin);
+                    await DbContext.SaveChangesAsync();
+                }
+            }
         }
     }
 
