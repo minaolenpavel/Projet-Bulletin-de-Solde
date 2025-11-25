@@ -30,14 +30,24 @@ def is_valid_json(data:str) -> bool:
     except:
         return False
 
-def write_json(path:str, data:str):
+def write_json(filename:str, data:str, folder_path:str = "./bulletins_solde_json"):
     if not is_valid_json(data):
         print("data is not json")
     else:
-        json_path = filename_without_extension(path) + ".json"
+        json_path = add_backslash(folder_path) + filename_without_extension(filename) + ".json"
         with open(json_path, "w", encoding='utf8') as json_file:
             json_file.write(data)
 
 def json_serialize(bulletin) -> str:
     data = json.dumps(bulletin.__dict__, ensure_ascii=False, indent=4)
     return data
+
+def add_backslash(folder_path:str):
+    if folder_path[-1] == "/":
+        return folder_path
+    else:
+        return folder_path + "/"
+    
+def list_files(folder_path:str) -> list:
+    dir_list = os.listdir(folder_path)
+    return [add_backslash(folder_path) + b for b in dir_list]

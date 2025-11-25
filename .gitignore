@@ -1,6 +1,7 @@
 secret.py
 *.pdf
 *.csv
+*.json
 __pycache__
 .vscode
 venv/

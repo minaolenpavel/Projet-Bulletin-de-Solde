@@ -1,15 +1,25 @@
-#from imap_solde_retriever import *
+from imap_solde_retriever import *
 from pdf_extract import *
 from models import *
 from utils import *
-import json
+import os
+
+def create_bulletin(amount:float, period:tuple, pdf_path:str) -> Bulletin:
+    bulletin = Bulletin(amount, period[0], period[1], period[2], pdf_path)
+    return bulletin
+
+def main():
+    dl_bulletins()
+    bulletins_pdf_paths = list_files("./bulletins_solde_pdf")
+    for bulletin_pdf_path in bulletins_pdf_paths:
+        csv_folder = create_csv(bulletin_pdf_path)
+        pure_path = os.path.basename(bulletin_pdf_path)
+        amount = get_amount(pure_path, csv_folder)
+        period = get_period(pure_path, csv_folder)
+        bulletin = create_bulletin(amount, period, bulletin_pdf_path)
+        json_data = json_serialize(bulletin)
+        write_json(bulletin_pdf_path, json_data)
 
 if __name__ == "__main__":
-    path = "test2.pdf"
-    period = get_period(path)
-    amount = get_amount(path)
-    bulletin = SoldeMois(amount, period[0], period[1], period[2], path)
-    print(bulletin)
-    data = json_serialize(bulletin)
-    write_json(path, data)
+    main()
 
