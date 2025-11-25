@@ -27,12 +27,14 @@ def dl_bulletins(download_folder:str = "./bulletins_solde_pdf") -> None:
 
         print("Date :", msg["Date"])
         
-        if msg.is_multipart():
-            for part in msg.walk():
-                if part.get_content_type() == "text/plain":
-                    print(part.get_payload(decode=True).decode())
-        else:
-            print(msg.get_payload(decode=True).decode())
+        # This part prints the content of the mail
+        #if msg.is_multipart():
+        #    for part in msg.walk():
+        #        if part.get_content_type() == "text/plain":
+        #            print(part.get_payload(decode=True).decode())
+        #else:
+        #    print(msg.get_payload(decode=True).decode())
+
         # msg.walk() parcourt toutes les parties du mail
         for part in msg.walk():
             # Indique si la partie est une pièce jointe
