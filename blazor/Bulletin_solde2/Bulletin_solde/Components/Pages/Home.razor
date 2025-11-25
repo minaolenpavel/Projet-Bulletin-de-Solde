@@ -1,0 +1,112 @@
+﻿@page "/"
+@using Bulletin_solde.Data
+@using Bulletin_solde.Data.Models
+@using Bulletin_solde.Data.Services
+@using Bulletin_solde.Components
+@using Microsoft.EntityFrameworkCore
+@using System.IO
+@using System.Text.Json.Nodes
+@inject Data.ApplicationDbContext DbContext
+@inject JsonServices jsonServices
+@inject IJSRuntime JS
+@rendermode InteractiveServer
+
+<h3>Liste des bulletins</h3>
+
+<InputFile OnChange="HandleFileSelected" accept=".json"/>
+
+@if (bulletins == null)
+{
+    <p>Chargement...</p>
+}
+else if (!bulletins.Any())
+{
+    <p>Aucun bulletin trouvé.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Année</th>
+                <th>Mois</th>
+                <th>Période</th>
+                <th>Montant</th>
+                <th>Fichier</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var b in bulletins)
+            {
+                <tr>
+                    <td>@b.Id</td>
+                    <td>@b.Year</td>
+                    <td>@b.Month</td>
+                    <td>@b.Period</td>
+                    <td>@b.Amount</td>
+                    <td>@b.FilePath</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+@if (json == null)
+{
+    <p>Nope</p>
+}
+else
+{
+    <p>@json</p>
+}
+@if (bulletin == null)
+{
+    <p>problème de classe</p>
+}
+else
+{
+    if (bulletin == null)
+    {
+        <p>classe mal init</p>
+    }
+    else
+    {
+        <p>@bulletin.Period</p>
+    }
+}
+
+
+@code {
+    private List<Bulletin> bulletins;
+    public string json;
+    public Bulletin? bulletin;
+    protected override async Task OnInitializedAsync()
+    {
+        bulletins = await jsonServices.GetAllBulletins();
+    }
+
+    protected async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+
+        using var stream = file.OpenReadStream();
+        using var reader = new StreamReader(stream);
+        json = await reader.ReadToEndAsync();
+        try
+        {
+            bulletin = jsonServices.ParseJson(json);
+            bulletins.Add(bulletin);
+            if(bulletin != null)
+            {
+                await DbContext.Bulletins.AddAsync(bulletin);
+                await DbContext.SaveChangesAsync();
+            }
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine("Error parsing json" + e);
+        }
+    }
+
+
+}
