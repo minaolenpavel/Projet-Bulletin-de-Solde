@@ -2,6 +2,7 @@ secret.py
 *.pdf
 *.csv
 __pycache__
+.vscode
 venv/
 pyvenv.cfg
 

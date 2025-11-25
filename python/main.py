@@ -5,7 +5,7 @@ from utils import *
 import json
 
 if __name__ == "__main__":
-    path = "test.pdf"
+    path = "test2.pdf"
     period = get_period(path)
     amount = get_amount(path)
     bulletin = SoldeMois(amount, period[0], period[1], period[2], path)

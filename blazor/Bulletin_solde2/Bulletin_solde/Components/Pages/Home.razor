@@ -15,67 +15,6 @@
 
 <InputFile OnChange="HandleFileSelected" accept=".json"/>
 
-@if (bulletins == null)
-{
-    <p>Chargement...</p>
-}
-else if (!bulletins.Any())
-{
-    <p>Aucun bulletin trouvé.</p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Année</th>
-                <th>Mois</th>
-                <th>Période</th>
-                <th>Montant</th>
-                <th>Fichier</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var b in bulletins)
-            {
-                <tr>
-                    <td>@b.Id</td>
-                    <td>@b.Year</td>
-                    <td>@b.Month</td>
-                    <td>@b.Period</td>
-                    <td>@b.Amount</td>
-                    <td>@b.FilePath</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-@if (json == null)
-{
-    <p>Nope</p>
-}
-else
-{
-    <p>@json</p>
-}
-@if (bulletin == null)
-{
-    <p>problème de classe</p>
-}
-else
-{
-    if (bulletin == null)
-    {
-        <p>classe mal init</p>
-    }
-    else
-    {
-        <p>@bulletin.Period</p>
-    }
-}
-
-
 @code {
     private List<Bulletin> bulletins;
     public string json;
