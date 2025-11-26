@@ -13,7 +13,7 @@
 
 <h3>Liste des bulletins</h3>
 
-<InputFile OnChange="HandleFileSelected" accept=".json" multiple/>
+<InputFile OnChange="HandleFileSelected" accept=".json" Multiple/>
 
 @if(bulletins != null)
 {
@@ -41,7 +41,7 @@
 
     protected async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
-        var files = e.GetMultipleFiles();
+        var files = e.GetMultipleFiles(maximumFileCount:20); // Defines how many files allowed, no matter the size
         foreach (var file in files)
         {
             using var stream = file.OpenReadStream();
