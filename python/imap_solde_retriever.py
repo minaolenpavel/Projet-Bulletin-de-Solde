@@ -1,7 +1,7 @@
 import email, imaplib, os, secret
 
 
-def dl_bulletins(download_folder:str = "./bulletins_solde_pdf") -> None:
+def dl_bulletins(download_folder:str = "./bulletins_solde_pdf", debug:bool = False) -> None:
     # VARS
     imap_ssl_host = 'imap.gmail.com'
     username = secret.username
@@ -25,7 +25,8 @@ def dl_bulletins(download_folder:str = "./bulletins_solde_pdf") -> None:
         raw_email = msg_data[0][1]
         msg = email.message_from_bytes(raw_email)
 
-        print("Date :", msg["Date"])
+        if debug:
+            print("Date :", msg["Date"])
         
         # This part prints the content of the mail
         #if msg.is_multipart():
@@ -48,4 +49,5 @@ def dl_bulletins(download_folder:str = "./bulletins_solde_pdf") -> None:
                     filepath = os.path.join(download_folder, filename)
                     with open(filepath, "wb") as f:
                         f.write(part.get_payload(decode=True))
-                    print(f" -> PDF téléchargé : {filename}")
+                    if debug:
+                        print(f" -> PDF téléchargé : {filename}")

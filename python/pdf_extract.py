@@ -36,11 +36,13 @@ def get_amount(path:str, csv_folder:str = "bulletins_solde_csv") -> float:
     '''
     Input is the original filename, example : '2025_11.pdf'.
     '''
-    pattern = r'(Montant : (\d+(,\d+)?))'
+    #pattern = r'(Montant : (\d+(,\d+)?))'
+    pattern = r'(Montant : (\d+(\s)?\d+(,\d+)?))'
     with open(f"{add_backslash(csv_folder)}{filename_without_extension(path)}-page-1-table-4.csv", mode = "r",  encoding='utf8') as file:
         content = file.read()
         m = re.search(pattern, content)
-        amount = m.group(2)
+        amount = m.group(2) # Capture group 2 is the total amount, other capture groups aren't relevant
+        amount = amount.replace(" ","") # Will not be able to convert to float if there is a white space between the thousand and the rest
         return float(amount.replace(",",".")) # Caprice
 
 if __name__ == "__main__":

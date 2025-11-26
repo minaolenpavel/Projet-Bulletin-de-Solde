@@ -8,10 +8,10 @@ def create_bulletin(amount:float, period:tuple, pdf_path:str) -> Bulletin:
     bulletin = Bulletin(amount, period[0], period[1], period[2], os.path.abspath(pdf_path))
     return bulletin
 
-def main():
+def main(debug:bool):
     stopwatch = Stopwatch()
     stopwatch.start()
-    dl_bulletins()
+    dl_bulletins(debug)
     bulletins_pdf_paths = list_files("./bulletins_solde_pdf")
     for bulletin_pdf_path in bulletins_pdf_paths:
         csv_folder = create_csv(bulletin_pdf_path)
@@ -22,8 +22,10 @@ def main():
         json_data = json_serialize(bulletin)
         write_json(bulletin_pdf_path, json_data)
     stopwatch.stop()
-    print(f"{stopwatch.total_time}")
+    print(f"{stopwatch.total_time} secondes pour éxecuter tout le script")
 
 if __name__ == "__main__":
-    main()
+    # Boolean to print some more logs, it's not perfect at all !
+    debug = False
+    main(debug)
 
