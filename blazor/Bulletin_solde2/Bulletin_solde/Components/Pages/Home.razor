@@ -41,41 +41,17 @@
 
     protected async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
-        if (e.FileCount == 1)
+        var files = e.GetMultipleFiles();
+        foreach (var file in files)
         {
-            var file = e.File;
-
-            using var stream = file.OpenReadStream(maxAllowedSize: 5_000_000);
+            using var stream = file.OpenReadStream();
             using var reader = new StreamReader(stream);
             string json = await reader.ReadToEndAsync();
-            try
+            Bulletin? bulletin = bServices.ParseJson(json);
+            if (bulletin != null)
             {
-                Bulletin? bulletin = bServices.ParseJson(json);
-                if (bulletin != null)
-                {
-                    await DbContext.Bulletins.AddAsync(bulletin);
-                    await DbContext.SaveChangesAsync();
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error parsing json" + e);
-            }
-        }
-        else
-        {
-            var files = e.GetMultipleFiles();
-            foreach(var file in files)
-            {
-                using var stream = file.OpenReadStream();
-                using var reader = new StreamReader(stream);
-                string json = await reader.ReadToEndAsync();
-                Bulletin? bulletin = bServices.ParseJson(json);
-                if (bulletin != null)
-                {
-                    await DbContext.Bulletins.AddAsync(bulletin);
-                    await DbContext.SaveChangesAsync();
-                }
+                await DbContext.Bulletins.AddAsync(bulletin);
+                await DbContext.SaveChangesAsync();
             }
         }
     }
