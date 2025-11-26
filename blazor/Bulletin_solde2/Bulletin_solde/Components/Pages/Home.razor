@@ -15,9 +15,26 @@
 
 <InputFile OnChange="HandleFileSelected" accept=".json" multiple/>
 
+@if(bulletins != null)
+{
+    <table>
+        <th>Somme</th>
+        <th>Mois</th>
+        <th>Année</th>
+    @foreach(Bulletin b in bulletins)
+    {
+        <tr>
+            <td>@b.Amount€</td>
+            <td>@b.MonthText (@b.Month)</td>
+            <td>@b.Year</td>
+        </tr>
+    }
+    </table>
+}
+
 @code {
     private List<Bulletin> bulletins;
-    protected async Task InitBulletinsList()
+    protected override async Task OnInitializedAsync()
     {
         bulletins = await bServices.GetAllBulletins();
     }
