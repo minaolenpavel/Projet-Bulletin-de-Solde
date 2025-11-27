@@ -1,37 +1,29 @@
 ﻿@using ApexCharts
+@using Bulletin_solde.Data.Models
+@using Bulletin_solde.Data.Services
+@inject Data.ApplicationDbContext DbContext
+@inject BulletinServices bServices
 
+<div style="width: 50%; height:300px; margin-bottom:auto">
+    <ApexChart TItem="Bulletin"
+               Title="Order Net Value">
 
-<ApexChart TItem="MyData"
-           Title="Sample Data">
-
-    <ApexPointSeries TItem="MyData"
-                     Items="Data"
-                     Name="Net Profit"
-                     SeriesType="SeriesType.Bar"
-                     XValue="e => e.Category"
-                     YValue="e=> e.NetProfit" />
-
-    <ApexPointSeries TItem="MyData"
-                     Items="Data"
-                     Name="Revenue"
-                     SeriesType="SeriesType.Bar"
-                     XValue="e => e.Category"
-                     YValue="e=> e.Revenue" />
-</ApexChart>
+        <ApexPointSeries TItem="Bulletin"
+                         Items="bulletins"
+                         Name="Solde mensuelle"
+                         XValue="@(e => e.Date)"
+                         YAggregate="@(e => e.Sum(e => e.Amount))"
+                         OrderBy="e=>e.X" />
+        <ApexPointSeries TItem="Bulletin"
+                         Items="bulletins" />
+    </ApexChart>
+</div>
 
 @code {
-    private List<MyData> Data { get; set; } = new();
-    protected override void OnInitialized()
+    private List<Bulletin> bulletins;
+    protected override async Task OnInitializedAsync()
     {
-        Data.Add(new MyData { Category = "Jan", NetProfit = 12, Revenue = 33 });
-        Data.Add(new MyData { Category = "Feb", NetProfit = 43, Revenue = 42 });
-        Data.Add(new MyData { Category = "Mar", NetProfit = 112, Revenue = 23 });
+        bulletins = await bServices.GetAllBulletins();
     }
 
-    public class MyData
-    {
-        public string Category { get; set; }
-        public int NetProfit { get; set; }
-        public int Revenue { get; set; }
-    }
 }
