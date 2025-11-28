@@ -1,19 +1,20 @@
 ﻿@using ApexCharts
 @using Bulletin_solde.Data.Models
 @using Bulletin_solde.Data.Services
+@using System.Globalization
 @inject Data.ApplicationDbContext DbContext
 @inject BulletinServices bServices
 
 <div style="width: 50%; height:300px; margin-bottom:auto">
     <ApexChart TItem="Bulletin"
-               Title="Order Net Value">
-
+               Title="Order Net Value"
+               >
         <ApexPointSeries TItem="Bulletin"
                          Items="bulletins"
                          Name="Solde mensuelle"
-                         XValue="@(e => e.Date)"
+                         XValue="@(e => e.Date.ToString("MMMM yy", cultureInfo))"
                          YAggregate="@(e => e.Sum(e => e.Amount))"
-                         OrderBy="e=>e.X" />
+                         />
         <ApexPointSeries TItem="Bulletin"
                          Items="bulletins" />
     </ApexChart>
@@ -21,9 +22,12 @@
 
 @code {
     private List<Bulletin> bulletins;
+    // For french language as date time is expressed
+    CultureInfo cultureInfo = new CultureInfo("fr-FR"); 
     protected override async Task OnInitializedAsync()
     {
         bulletins = await bServices.GetAllBulletins();
+        bulletins = bulletins.OrderBy(b => b.Date).ToList();
     }
 
 }
