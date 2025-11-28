@@ -1,0 +1,28 @@
+﻿@using Bulletin_solde.Data.Models
+@using Bulletin_solde.Data.Services
+@inject Data.ApplicationDbContext DbContext
+@inject BulletinServices bServices
+
+
+<InputFile OnChange="HandleFileSelected" accept=".json" Multiple />
+
+@code {
+    private List<Bulletin> bulletins;
+
+    protected async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        var files = e.GetMultipleFiles(maximumFileCount: 20); // Defines how many files allowed, no matter the size
+        foreach (var file in files)
+        {
+            using var stream = file.OpenReadStream();
+            using var reader = new StreamReader(stream);
+            string json = await reader.ReadToEndAsync();
+            Bulletin? bulletin = bServices.ParseJson(json);
+            if (bulletin != null)
+            {
+                await DbContext.Bulletins.AddAsync(bulletin);
+                await DbContext.SaveChangesAsync();
+            }
+        }
+    }
+}

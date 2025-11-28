@@ -1,62 +1,20 @@
 ﻿@page "/"
-@using Bulletin_solde.Data
 @using Bulletin_solde.Data.Models
 @using Bulletin_solde.Data.Services
-@using Bulletin_solde.Components
-@using Microsoft.EntityFrameworkCore
-@using System.IO
-@using System.Text.Json.Nodes
 @inject Data.ApplicationDbContext DbContext
 @inject BulletinServices bServices
-@inject IJSRuntime JS
 @rendermode InteractiveServer
 
 <h3>Liste des bulletins</h3>
 
-<InputFile OnChange="HandleFileSelected" accept=".json" Multiple/>
+<UploadJson></UploadJson>
 
-<ChartsTest></ChartsTest>
-
-@if(false)
-{
-    <table>
-        <th>Somme</th>
-        <th>Mois</th>
-        <th>Année</th>
-    @foreach(Bulletin b in bulletins)
-    {
-        <tr>
-            <td>@b.Amount€</td>
-            <td>@b.MonthText (@b.Month)</td>
-            <td>@b.Year</td>
-        </tr>
-    }
-    </table>
-}
+<BulletinsLineChart bulletins="@bulletins"></BulletinsLineChart>
 
 @code {
-    private List<Bulletin> bulletins;
+    List<Bulletin> bulletins;
     protected override async Task OnInitializedAsync()
     {
         bulletins = await bServices.GetAllBulletins();
     }
-
-    protected async Task HandleFileSelected(InputFileChangeEventArgs e)
-    {
-        var files = e.GetMultipleFiles(maximumFileCount:20); // Defines how many files allowed, no matter the size
-        foreach (var file in files)
-        {
-            using var stream = file.OpenReadStream();
-            using var reader = new StreamReader(stream);
-            string json = await reader.ReadToEndAsync();
-            Bulletin? bulletin = bServices.ParseJson(json);
-            if (bulletin != null)
-            {
-                await DbContext.Bulletins.AddAsync(bulletin);
-                await DbContext.SaveChangesAsync();
-            }
-        }
-    }
-
-
 }

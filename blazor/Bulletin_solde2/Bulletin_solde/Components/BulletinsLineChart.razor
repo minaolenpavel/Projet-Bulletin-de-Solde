@@ -7,7 +7,7 @@
 
 <div style="width: 50%; height:300px; margin-bottom:auto">
     <ApexChart TItem="Bulletin"
-               Title="Order Net Value"
+               Title="Historique des soldes mensuelles"
                >
         <ApexPointSeries TItem="Bulletin"
                          Items="bulletins"
@@ -15,19 +15,17 @@
                          XValue="@(e => e.Date.ToString("MMMM yy", cultureInfo))"
                          YAggregate="@(e => e.Sum(e => e.Amount))"
                          />
-        <ApexPointSeries TItem="Bulletin"
-                         Items="bulletins" />
     </ApexChart>
 </div>
 
 @code {
-    private List<Bulletin> bulletins;
+    [Parameter]
+    public List<Bulletin> bulletins { get; set; }
+
     // For french language as date time is expressed
     CultureInfo cultureInfo = new CultureInfo("fr-FR"); 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        bulletins = await bServices.GetAllBulletins();
         bulletins = bulletins.OrderBy(b => b.Date).ToList();
     }
-
 }
