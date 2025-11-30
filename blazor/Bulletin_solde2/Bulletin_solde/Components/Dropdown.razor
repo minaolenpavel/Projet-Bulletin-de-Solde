@@ -1,7 +1,7 @@
 ﻿@using Bulletin_solde.Data.Models
 @typeparam TEnum where TEnum : struct, Enum
 
-<select @bind-value="SelectedValue" @bind-value:event="OnChanged">
+<select onchange="@OnChanged">
     @foreach(var value in Enum.GetValues(typeof(TEnum)))
     {
         <option value="@value">@value</option>

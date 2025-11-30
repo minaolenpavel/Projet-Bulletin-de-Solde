@@ -11,7 +11,10 @@
 <Dropdown TEnum="VisualisationModes" SelectedValue="selectedMode" SelectedValueChanged="OnDropDownChanged"></Dropdown>
 <p>Selected mode is @selectedMode</p>
 
-<BulletinsLineChart bulletins="@bulletins"></BulletinsLineChart>
+@if(selectedMode == VisualisationModes.Bulletin)
+{
+    <BulletinsLineChart bulletins="@bulletins"></BulletinsLineChart>
+}
 
 @code {
     private VisualisationModes selectedMode = VisualisationModes.Bulletin;
@@ -25,7 +28,7 @@
     private async Task OnDropDownChanged(VisualisationModes newMode)
     {
         selectedMode = newMode;
+        StateHasChanged();
         Console.WriteLine($"Dropdown changed to {newMode}");
-        await JS.InvokeVoidAsync("console.log", $"Dropdown changed to {newMode}");
     }
 }
