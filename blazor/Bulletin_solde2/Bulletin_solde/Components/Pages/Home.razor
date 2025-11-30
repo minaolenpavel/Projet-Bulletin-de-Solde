@@ -14,18 +14,21 @@
 @if(selectedMode == VisualisationModes.Bulletin)
 {
     <BulletinsLineChart bulletins="@bulletins"></BulletinsLineChart>
+}else if (selectedMode == VisualisationModes.Month)
+{
+    
 }
 
 @code {
     private VisualisationModes selectedMode = VisualisationModes.Bulletin;
-    List<Bulletin> bulletins;
+    List<Bulletin>? bulletins;
 
     protected override async Task OnInitializedAsync()
     {
         bulletins = await bServices.GetAllBulletins();
     }
 
-    private async Task OnDropDownChanged(VisualisationModes newMode)
+    private void OnDropDownChanged(VisualisationModes newMode)
     {
         selectedMode = newMode;
         StateHasChanged();
