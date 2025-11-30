@@ -8,7 +8,7 @@
 <h3>Liste des bulletins</h3>
 
 <UploadJson></UploadJson>
-<Dropdown TEnum="VisualisationModes" SelectedValue="selectedMode"></Dropdown>
+<Dropdown TEnum="VisualisationModes" SelectedValue="selectedMode" SelectedValueChanged="OnDropDownChanged"></Dropdown>
 <p>Selected mode is @selectedMode</p>
 
 <BulletinsLineChart bulletins="@bulletins"></BulletinsLineChart>
@@ -16,8 +16,16 @@
 @code {
     private VisualisationModes selectedMode = VisualisationModes.Bulletin;
     List<Bulletin> bulletins;
+
     protected override async Task OnInitializedAsync()
     {
         bulletins = await bServices.GetAllBulletins();
+    }
+
+    private async Task OnDropDownChanged(VisualisationModes newMode)
+    {
+        selectedMode = newMode;
+        Console.WriteLine($"Dropdown changed to {newMode}");
+        await JS.InvokeVoidAsync("console.log", $"Dropdown changed to {newMode}");
     }
 }

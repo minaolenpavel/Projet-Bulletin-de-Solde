@@ -1,7 +1,7 @@
 ﻿@using Bulletin_solde.Data.Models
-@typeparam TEnum
+@typeparam TEnum where TEnum : struct, Enum
 
-<select @bind="SelectedValue">
+<select @bind-value="SelectedValue" @bind-value:event="OnChanged">
     @foreach(var value in Enum.GetValues(typeof(TEnum)))
     {
         <option value="@value">@value</option>
@@ -12,4 +12,18 @@
 @code {
     [Parameter]
     public TEnum SelectedValue { get; set; }
+
+    [Parameter]
+    public EventCallback<TEnum> SelectedValueChanged { get; set; }
+
+    // This creates in the component the trigger effect when the value changed
+    // When the component is used in a page we can then custom the effect of value changed within the page
+    private async Task OnChanged(ChangeEventArgs e)
+    {
+        if(e.Value != null && Enum.TryParse<TEnum>(e.Value?.ToString(), out var newValue))
+        {
+            SelectedValue = newValue;
+            await SelectedValueChanged.InvokeAsync(newValue);
+        }
+    }
 }
