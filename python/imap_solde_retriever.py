@@ -1,4 +1,4 @@
-import email, imaplib, os, secret
+import email, imaplib, os, secret, utils
 
 
 def dl_bulletins(download_folder:str = "./bulletins_solde_pdf", debug:bool = False) -> None:
@@ -19,6 +19,7 @@ def dl_bulletins(download_folder:str = "./bulletins_solde_pdf", debug:bool = Fal
     # Récupère tous les ID des mails correspondants
     mail_ids = data[1][0].split() # PEUT ETRE PATCHER SI PROBLEME ET STATUS != OK
 
+    emails_datetime_list = []
     for mail_id in mail_ids:
         # Récupère le mail pour l'id donnée
         status, msg_data = mail.fetch(mail_id, '(RFC822)')  # récupère le mail complet
@@ -27,7 +28,7 @@ def dl_bulletins(download_folder:str = "./bulletins_solde_pdf", debug:bool = Fal
 
         if debug:
             print("Date :", msg["Date"])
-        
+        emails_datetime_list.append(msg["Date"])
         # This part prints the content of the mail
         #if msg.is_multipart():
         #    for part in msg.walk():
@@ -51,3 +52,6 @@ def dl_bulletins(download_folder:str = "./bulletins_solde_pdf", debug:bool = Fal
                         f.write(part.get_payload(decode=True))
                     if debug:
                         print(f" -> PDF téléchargé : {filename}")
+        
+        json_datetime_list = utils.json_serialize_list(emails_datetime_list)
+        utils.write_json("datetime_list", json_datetime_list, "./")

@@ -54,8 +54,12 @@ def write_json(filename:str, data:str, folder_path:str = "./bulletins_solde_json
         with open(json_path, "w", encoding='utf8') as json_file:
             json_file.write(data)
 
-def json_serialize(bulletin) -> str:
+def json_serialize_bulletin(bulletin) -> str:
     data = json.dumps(bulletin.__dict__, ensure_ascii=False, indent=4)
+    return data
+
+def json_serialize_list(liste:list) -> str:
+    data = json.dumps(liste, ensure_ascii=False, indent=4)
     return data
 
 def add_backslash(folder_path:str):
