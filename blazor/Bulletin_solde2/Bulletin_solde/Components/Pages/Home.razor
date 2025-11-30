@@ -8,10 +8,13 @@
 <h3>Liste des bulletins</h3>
 
 <UploadJson></UploadJson>
+<Dropdown TEnum="VisualisationModes" SelectedValue="selectedMode"></Dropdown>
+<p>Selected mode is @selectedMode</p>
 
 <BulletinsLineChart bulletins="@bulletins"></BulletinsLineChart>
 
 @code {
+    private VisualisationModes selectedMode = VisualisationModes.Bulletin;
     List<Bulletin> bulletins;
     protected override async Task OnInitializedAsync()
     {

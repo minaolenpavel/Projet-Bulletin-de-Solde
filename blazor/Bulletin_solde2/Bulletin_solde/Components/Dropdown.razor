@@ -1,0 +1,15 @@
+﻿@using Bulletin_solde.Data.Models
+@typeparam TEnum
+
+<select @bind="SelectedValue">
+    @foreach(var value in Enum.GetValues(typeof(TEnum)))
+    {
+        <option value="@value">@value</option>
+    }
+</select>
+
+
+@code {
+    [Parameter]
+    public TEnum SelectedValue { get; set; }
+}
