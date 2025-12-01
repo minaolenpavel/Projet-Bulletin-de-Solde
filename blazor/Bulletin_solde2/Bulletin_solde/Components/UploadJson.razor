@@ -4,14 +4,35 @@
 @inject BulletinServices bServices
 
 
-<InputFile OnChange="HandleFileSelected" accept=".json" Multiple />
+<!-- <InputFile OnChange="HandleFileSelected" accept=".json" Multiple /> -->
+
+<MudFileUpload T="IReadOnlyList<IBrowserFile>" FilesChanged="UploadFiles" MaximumFileCount="100">
+    <ActivatorContent>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.CloudUpload">
+            Fichiers Json
+        </MudButton>
+    </ActivatorContent>
+</MudFileUpload>
+
 
 @code {
     private List<Bulletin> bulletins;
 
-    protected async Task HandleFileSelected(InputFileChangeEventArgs e)
+    IList<IBrowserFile> files = new List<IBrowserFile>();
+    private async void UploadFiles(IReadOnlyList<IBrowserFile> files)
     {
-        var files = e.GetMultipleFiles(maximumFileCount: 20); // Defines how many files allowed, no matter the size
+        foreach (var file in files)
+        {
+            this.files.Add(file);
+        }
+        await HandleFiles(files);
+    }
+
+    protected async Task HandleFiles(IReadOnlyList<IBrowserFile> files)
+    {
+        //var files = e.GetMultipleFiles(maximumFileCount: 20); // Defines how many files allowed, no matter the size
         foreach (var file in files)
         {
             using var stream = file.OpenReadStream();
@@ -22,6 +43,7 @@
             {
                 await DbContext.Bulletins.AddAsync(bulletin);
                 await DbContext.SaveChangesAsync();
+                StateHasChanged();
             }
         }
     }
