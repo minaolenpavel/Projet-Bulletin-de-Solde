@@ -71,3 +71,6 @@ def add_backslash(folder_path:str):
 def list_files(folder_path:str) -> list:
     dir_list = os.listdir(folder_path)
     return [add_backslash(folder_path) + b for b in dir_list]
+
+def datetime_format() -> str:
+    return "%a, %d %b %Y %H:%M:%S %z"

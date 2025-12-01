@@ -24,7 +24,7 @@ def main(debug:bool):
 if __name__ == "__main__":
     stopwatch = Stopwatch()
     stopwatch.start()
-    # Boolean to print some more logs, it's not perfect at all !
+    # Boolean to print some more succinct logs
     debug = False
     main(debug)
     stopwatch.stop()

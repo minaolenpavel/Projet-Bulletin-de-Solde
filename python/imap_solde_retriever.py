@@ -1,4 +1,4 @@
-import email, imaplib, os, secret, utils
+import email, imaplib, os, secret, utils, datetime
 
 
 def dl_bulletins(download_folder:str = "./bulletins_solde_pdf", debug:bool = False) -> None:
@@ -53,5 +53,8 @@ def dl_bulletins(download_folder:str = "./bulletins_solde_pdf", debug:bool = Fal
                     if debug:
                         print(f" -> PDF téléchargé : {filename}")
         
-        json_datetime_list = utils.json_serialize_list(emails_datetime_list)
+        date_time_list_sorted = sorted(
+            emails_datetime_list, 
+            key= lambda x : datetime.datetime.strptime(x, utils.datetime_format()), reverse=False)
+        json_datetime_list = utils.json_serialize_list(date_time_list_sorted)
         utils.write_json("datetime_list", json_datetime_list, "./")
