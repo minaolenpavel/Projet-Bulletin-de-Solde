@@ -5,23 +5,42 @@
 @inject BulletinServices bServices
 @rendermode InteractiveServer
 
+<head>
+    <link rel="stylesheet" href="~/app.css"/>
+</head>
+
 <h3>Liste des bulletins</h3>
-
 <UploadJson></UploadJson>
-<Dropdown TEnum="VisualisationModes" SelectedValue="selectedMode" SelectedValueChanged="OnDropDownChanged"></Dropdown>
-<p>Selected mode is @selectedMode</p>
 
-@if(selectedMode == VisualisationModes.Bulletin)
-{
-    <BulletinsLineChart bulletins="@bulletins"></BulletinsLineChart>
-}else if (selectedMode == VisualisationModes.Month)
-{
-    
-}
+<div class="dashboard-container">
+    <div class="linechart-section">
+        <div class="linechart-options">
+            <h3>@lineChartTitle</h3>
+            <Dropdown TEnum="VisualisationModes" SelectedValue="selectedMode" SelectedValueChanged="OnDropDownChanged"></Dropdown>
+        </div>
+        
+        @if (selectedMode == VisualisationModes.Bulletin)
+        {
+            
+            <BulletinsLineChart bulletins="@bulletins"></BulletinsLineChart>
+        }
+        else if (selectedMode == VisualisationModes.Month)
+        {
+
+        }
+    </div>
+    <div class="stats-section">
+
+    </div>
+</div>
+
+
+
 
 @code {
     private VisualisationModes selectedMode = VisualisationModes.Bulletin;
     List<Bulletin>? bulletins;
+    private string lineChartTitle = "Visualisation de tous les bulletins de solde";
 
     protected override async Task OnInitializedAsync()
     {
@@ -31,6 +50,18 @@
     private void OnDropDownChanged(VisualisationModes newMode)
     {
         selectedMode = newMode;
+        if(selectedMode == VisualisationModes.Bulletin)
+        {
+            lineChartTitle = "Visualisation de tous les bulletins de solde";
+        }
+        else if(selectedMode == VisualisationModes.Month)
+        {
+            lineChartTitle = "Visualisation des paiements par mois";
+        }
+        else if(selectedMode == VisualisationModes.Days)
+        {
+            lineChartTitle = "Visualisation du nombre de jours de service par mois";
+        }
         StateHasChanged();
         Console.WriteLine($"Dropdown changed to {newMode}");
     }

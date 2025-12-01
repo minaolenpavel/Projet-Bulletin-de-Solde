@@ -1,3 +1,5 @@
+/* Basic Blazor styling */
+/* I don't what it is, but I DO NOT TOUCH IT*/
 h1:focus {
     outline: none;
 }
@@ -26,4 +28,42 @@ h1:focus {
 
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
+}
+
+/* My styling */
+
+/* Regular */
+@font-face {
+    font-family: 'Gt-Eesti';
+    src: url('fonts/Gt-Eesti/GT-Eesti-Display-Regular.TTF') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+/* Bold */
+@font-face {
+    font-family: 'Gt-Eesti';
+    src: url('fonts/Gt-Eesti/GT-Eesti-Display-Bold.TTF') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+/* Italic */
+@font-face {
+    font-family: 'Gt-Eesti';
+    src: url('fonts/Gt-Eesti/GT-Eesti-Display-Italic.TTF') format('opentype');
+    font-weight: 400;
+    font-style: italic;
+}
+
+/* Thin */
+@font-face {
+    font-family: 'Gt-Eesti';
+    src: url('fonts/Gt-Eesti/GT-Eesti-Display-Italic.TTF') format('opentype');
+    font-weight: 200;
+    font-style: normal;
+}
+
+*{
+    font-family:Gt-Eesti;
 }

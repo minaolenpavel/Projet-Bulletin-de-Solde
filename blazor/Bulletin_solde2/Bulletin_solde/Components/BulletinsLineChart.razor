@@ -7,7 +7,6 @@
 
 <div style="width: 50%; height:300px; margin-bottom:auto">
     <ApexChart TItem="Bulletin"
-               Title="Historique des soldes mensuelles"
                >
         <ApexPointSeries TItem="Bulletin"
                          Items="bulletins"
@@ -22,10 +21,16 @@
     [Parameter]
     public List<Bulletin> bulletins { get; set; }
 
+    private ApexChartOptions<Bulletin> options = new ApexCharts.ApexChartOptions<Bulletin>();
+
     // For french language as date time is expressed
     CultureInfo cultureInfo = new CultureInfo("fr-FR"); 
     protected override void OnInitialized()
     {
         bulletins = bulletins.OrderBy(b => b.Date).ToList();
+        options.Title = new ApexCharts.Title
+        {
+            Style = new TitleStyle{FontFamily = "Gt-Eesti"}
+        };
     }
 }
