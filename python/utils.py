@@ -23,7 +23,7 @@ def filename_without_extension(path:str) -> str:
     '''
     return os.path.splitext(os.path.basename(path))[0]
 
-def month_name_from_number(month_num:int) -> str:
+def month_name_from_number(month_num:int) -> str: # Is prob obs, idk will keep it for now
     month_dict = {
                 1 : "janvier",
                 2 : "février",
@@ -46,7 +46,7 @@ def is_valid_json(data:str) -> bool:
     except:
         return False
 
-def write_json(filename:str, data:str, folder_path:str = "./bulletins_solde_json"):
+def write_json(filename:str, data:str, folder_path:str):
     if not is_valid_json(data):
         print("data is not json")
     else:

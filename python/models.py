@@ -9,7 +9,6 @@ class Bulletin:
         self.Amount = amount
         self.Period = period
         self.Month = month
-        self.MonthText = month_name_from_number(month)
         self.Year = year
         self.FilePath = path # Path to original document
     

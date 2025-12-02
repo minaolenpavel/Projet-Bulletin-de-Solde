@@ -1,7 +1,7 @@
 import email, imaplib, os, secret, utils, datetime
 
 
-def dl_bulletins(download_folder:str = "./bulletins_solde_pdf", debug:bool = False) -> None:
+def dl_bulletins(download_folder:str, debug:bool, mail_subject:str) -> None:
     # VARS
     imap_ssl_host = 'imap.gmail.com'
     username = secret.username
@@ -15,7 +15,7 @@ def dl_bulletins(download_folder:str = "./bulletins_solde_pdf", debug:bool = Fal
 
     # RECUP MSG
     # Récupère les mails avec le sujet du mail type
-    data = mail.search(None, f'({MAIL_SUBJECT})')
+    data = mail.search(None, f'({mail_subject})')
     # Récupère tous les ID des mails correspondants
     mail_ids = data[1][0].split() # PEUT ETRE PATCHER SI PROBLEME ET STATUS != OK
 

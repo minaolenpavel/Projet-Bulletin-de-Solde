@@ -4,7 +4,7 @@ from utils import filename_without_extension, add_backslash
 from models import Bulletin
 import gc
 
-def create_csv(path:str, export_folder:str = "./bulletins_solde_csv") -> None:
+def create_csv(path:str, export_folder:str) -> None:
     '''
     Takes the path of a PDF and gives out one or several CSV tables out of it
     '''
@@ -16,7 +16,7 @@ def create_csv(path:str, export_folder:str = "./bulletins_solde_csv") -> None:
     gc.collect()
     return export_folder
 
-def get_period(path:str, csv_folder:str = "bulletins_solde_csv")-> tuple:
+def get_period(path:str, csv_folder:str)-> tuple:
     '''
     Input is the original filename, example : '2025_11.pdf'. 
     \nOutput is a tuple as (period, month, year)
@@ -32,7 +32,7 @@ def get_period(path:str, csv_folder:str = "bulletins_solde_csv")-> tuple:
         year = m.group(2)
         return (period, int(month), int(year))
     
-def get_amount(path:str, csv_folder:str = "bulletins_solde_csv") -> float:
+def get_amount(path:str, csv_folder:str) -> float:
     '''
     Input is the original filename, example : '2025_11.pdf'.
     '''
