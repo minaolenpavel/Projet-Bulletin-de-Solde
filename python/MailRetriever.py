@@ -1,4 +1,4 @@
-import email, imaplib, os, secret, utils, datetime
+import email, imaplib, os, utils, datetime
 
 class MailRetriever:
     def __init__(self, username:str, password:str, imap_ssl_host:str, mail_subject:str, debug:bool):
