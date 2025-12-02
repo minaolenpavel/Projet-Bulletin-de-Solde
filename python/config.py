@@ -5,6 +5,8 @@ from dataclasses import dataclass
 class Config:
     username = secret.username
     password = secret.password
+    imap_ssl_host = 'imap.gmail.com'
+
 
     pdf_folder:str = "bulletins_solde_pdf"
     mail_subject:str = 'SUBJECT "RH-TERRE/AIDDA - BMS"'

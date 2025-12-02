@@ -1,4 +1,4 @@
-from imap_solde_retriever import *
+from MailRetriever import *
 from pdf_extract import *
 from models import *
 from utils import *
@@ -9,13 +9,17 @@ def create_bulletin(amount:float, period:tuple, pdf_path:str) -> Bulletin:
     bulletin = Bulletin(amount, period[0], period[1], period[2], os.path.abspath(pdf_path))
     return bulletin
 
-def main(debug:bool):
+def main():
     config = Config()
 
-    dl_bulletins(
-        config.pdf_folder,
-        config.debug, 
-        config.mail_subject)
+    mailRetriever = MailRetriever(
+        config.username,
+        config.password,
+        config.imap_ssl_host,
+        config.mail_subject,
+        config.debug)
+
+    mailRetriever.download_payslips(config.pdf_folder)
     
     bulletins_pdf_paths = list_files(config.pdf_folder)
     for bulletin_pdf_path in bulletins_pdf_paths:
@@ -40,9 +44,9 @@ def main(debug:bool):
 if __name__ == "__main__":
     stopwatch = Stopwatch()
     stopwatch.start()
-    # Boolean to print some more succinct logs
-    debug = False
-    main(debug)
+
+    main()
+
     stopwatch.stop()
     print(f"{stopwatch.total_time} secondes pour éxecuter tout le script")
 
