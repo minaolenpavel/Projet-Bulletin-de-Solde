@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography.X509Certificates;
 using System;
+using System.Runtime.CompilerServices;
+using Bulletin_solde.Data.Models;
 
 namespace Bulletin_solde.Data.Service
 {
@@ -34,6 +36,22 @@ namespace Bulletin_solde.Data.Service
         {
             double maxEnd = await _context.Bulletins.Select(b => b.Amount).MaxAsync();
             return Math.Round(maxEnd, 2);
+        }
+        public async Task<int> GetCountBulletins()
+        {
+            int countBulletins = await _context.Bulletins.Select(b =>b).Distinct().CountAsync();
+            return countBulletins;
+        }
+        public async Task<double> GetStandardDeviationIncome()
+        {
+            List<Bulletin> bulletins = await _context.Bulletins.ToListAsync();
+            // Find the mean
+            double avg = await _context.Bulletins.Select(b => b.Amount).AverageAsync();
+            // For each data point, find the square root of its distance to the mean
+            var powDist = bulletins.Select(b => Math.Pow(Math.Abs(b.Amount - avg), 2)).ToList();
+            double sqrtDistSum = powDist.Sum();
+            double result = Math.Sqrt(sqrtDistSum / await GetCountBulletins());
+            return Math.Round(result, 3);
         }
     }
 }

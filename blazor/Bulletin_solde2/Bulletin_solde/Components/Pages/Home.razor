@@ -29,9 +29,11 @@
         }
     </div>
     <div class="stats-section">
+        <div class="stat-item">Nombre de bulletins : @count</div>
         <div class="stat-item">Moyenne par bulletin : @average€</div>
         <div class="stat-item">Minimum : @min€</div>
         <div class="stat-item">Maximum : @max€</div>
+        <div class="stat-item">Standard deviation : @std</div>
         <div class="stat-item">Total : @total€</div>
     </div>
 </div>
@@ -50,6 +52,12 @@
     private double average;
     private double min;
     private double max;
+    private double median;
+    private double count;
+    private double std; // Standard deviation
+    private double missingMonths; // How many months they did not pay you hahaha
+    private DateTime timeSinceLastPayment;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -92,6 +100,9 @@
         average = await stats.GetAverageIncome();
         min = await stats.GetMinStartIncome();
         max = await stats.GetMaxEndIncome();
+
+        count = await stats.GetCountBulletins();
+        std = await stats.GetStandardDeviationIncome();
     }
 
     private async Task OnFilesLoaded()
