@@ -1,8 +1,10 @@
 ﻿@page "/"
 @using Bulletin_solde.Data.Models
+@using Bulletin_solde.Data.Service
 @using Bulletin_solde.Data.Services
 @inject Data.ApplicationDbContext DbContext
 @inject BulletinServices bServices
+@inject StatisticsServices stats
 @rendermode InteractiveServer
 
 <head>
@@ -28,10 +30,10 @@
         }
     </div>
     <div class="stats-section">
-        <div class="stat-item">Moyenne : </div>
-        <div class="stat-item">Minimum : </div>
-        <div class="stat-item">Maximum : </div>
-        <div class="stat-item">Total : </div>
+        <div class="stat-item">Moyenne : €</div>
+        <div class="stat-item">Minimum : €</div>
+        <div class="stat-item">Maximum : €</div>
+        <div class="stat-item">Total : @total€</div>
     </div>
 </div>
 
@@ -42,10 +44,12 @@
     private VisualisationModes selectedMode = VisualisationModes.Bulletin;
     List<Bulletin>? bulletins;
     private string lineChartTitle = "Visualisation de tous les bulletins de solde";
+    private double total;
 
     protected override async Task OnInitializedAsync()
     {
         bulletins = await bServices.GetAllBulletins();
+        total = await stats.GetTotalIncome();
     }
 
     private void OnDropDownChanged(VisualisationModes newMode)

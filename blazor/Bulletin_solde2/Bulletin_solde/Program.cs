@@ -1,5 +1,6 @@
 using Bulletin_solde.Components;
 using Bulletin_solde.Data;
+using Bulletin_solde.Data.Service;
 using Bulletin_solde.Data.Services;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
@@ -17,6 +18,7 @@ builder.Services.AddServerSideBlazor()
         options.MaximumReceiveMessageSize = 10 * 1024 * 1024; // 10 MB
     });
 builder.Services.AddMudServices();
+builder.Services.AddScoped<StatisticsServices>();   
 
 var app = builder.Build();
 
