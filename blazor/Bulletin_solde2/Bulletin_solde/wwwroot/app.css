@@ -83,6 +83,10 @@ body {
     background-color: #f0f0f0;
 }
 
+select{
+    padding:3px;
+}
+
 .linechart-options{
     display:flex;
     align-items : center;
@@ -95,7 +99,8 @@ body {
     align-items: flex-start; /* align tops of the sections */
     justify-content: center; /* optional: center horizontally in page */
     margin-top: 5%; /* keep your top margin */
-    margin-left : 20px;
+    margin-left : 40px;
+    margin-right : 40px;
 }
 
 .linechart-section {
@@ -123,6 +128,11 @@ body {
 
 .stat-item:last-child {
     border-bottom: none; /* remove border on the last item */
+}
+
+.upload-btn-container{
+    margin-top:20px;
+    margin-left:40px; /* Same as the dashboard */
 }
 
 

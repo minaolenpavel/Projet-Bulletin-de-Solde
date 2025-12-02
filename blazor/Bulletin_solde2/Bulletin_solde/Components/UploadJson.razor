@@ -11,13 +11,16 @@
         <MudButton Variant="Variant.Filled"
                    Color="Color.Primary"
                    StartIcon="@Icons.Material.Filled.CloudUpload">
-            Fichiers Json
+            Importer .Json
         </MudButton>
     </ActivatorContent>
 </MudFileUpload>
 
 
 @code {
+    [Parameter]
+    public EventCallback OnFilesProcessed { get; set; }
+
     private List<Bulletin> bulletins;
 
     IList<IBrowserFile> files = new List<IBrowserFile>();
@@ -28,6 +31,8 @@
             this.files.Add(file);
         }
         await HandleFiles(files);
+
+        await OnFilesProcessed.InvokeAsync();
     }
 
     protected async Task HandleFiles(IReadOnlyList<IBrowserFile> files)
