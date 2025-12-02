@@ -12,7 +12,7 @@
                          Items="bulletins"
                          Name="Solde mensuelle"
                          XValue="@(e => e.Date.ToString("MMMM yy", cultureInfo))"
-                         YAggregate="@(e => e.Sum(e => e.Amount))"
+                         YAggregate="@(e => e.Sum(e => (decimal)e.Amount))"
                          />
     </ApexChart>
 </div>

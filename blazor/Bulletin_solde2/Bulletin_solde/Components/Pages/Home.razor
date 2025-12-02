@@ -30,7 +30,7 @@
         }
     </div>
     <div class="stats-section">
-        <div class="stat-item">Moyenne : €</div>
+        <div class="stat-item">Moyenne par bulletin : @average€</div>
         <div class="stat-item">Minimum : €</div>
         <div class="stat-item">Maximum : €</div>
         <div class="stat-item">Total : @total€</div>
@@ -45,11 +45,13 @@
     List<Bulletin>? bulletins;
     private string lineChartTitle = "Visualisation de tous les bulletins de solde";
     private double total;
+    private double average;
 
     protected override async Task OnInitializedAsync()
     {
         bulletins = await bServices.GetAllBulletins();
         total = await stats.GetTotalIncome();
+        average = await stats.GetAverageIncome();
     }
 
     private void OnDropDownChanged(VisualisationModes newMode)
