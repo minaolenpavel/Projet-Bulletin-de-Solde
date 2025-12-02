@@ -32,6 +32,17 @@ h1:focus {
 
 /* My styling */
 
+@media (max-width: 768px) {
+    .dashboard-container {
+        flex-direction: column;
+    }
+
+    .linechart-section,
+    .stats-section {
+        width: 100%;
+    }
+}
+
 /* Regular */
 @font-face {
     font-family: 'Gt-Eesti';
@@ -67,3 +78,51 @@ h1:focus {
 *{
     font-family:Gt-Eesti;
 }
+
+body {
+    background-color: #f0f0f0;
+}
+
+.linechart-options{
+    display:flex;
+    align-items : center;
+    gap : 3rem;
+}
+
+.dashboard-container {
+    display: flex; /* place children in a row */
+    gap: 2rem; /* space between graph and stats */
+    align-items: flex-start; /* align tops of the sections */
+    justify-content: center; /* optional: center horizontally in page */
+    margin-top: 5%; /* keep your top margin */
+    margin-left : 20px;
+}
+
+.linechart-section {
+    flex: 1.5; /* bigger width for the graph */
+    height: 300px;
+    padding: 10px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    background-color: #f5f5f5;
+    padding-bottom: 35%; /*Important so the background effect does not only apply to the top of the cart*/
+    width: 100%
+}
+
+.stats-section {
+    flex: 1; /* smaller width for stats */
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    background-color: #f5f5f5;
+}
+.stat-item {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.stat-item:last-child {
+    border-bottom: none; /* remove border on the last item */
+}
+
+

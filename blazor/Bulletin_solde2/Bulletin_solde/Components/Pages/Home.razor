@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="~/app.css"/>
 </head>
 
-<h3>Liste des bulletins</h3>
 <UploadJson></UploadJson>
 
 <div class="dashboard-container">
@@ -21,7 +20,6 @@
         
         @if (selectedMode == VisualisationModes.Bulletin)
         {
-            
             <BulletinsLineChart bulletins="@bulletins"></BulletinsLineChart>
         }
         else if (selectedMode == VisualisationModes.Month)
@@ -30,7 +28,10 @@
         }
     </div>
     <div class="stats-section">
-
+        <div class="stat-item">Moyenne : </div>
+        <div class="stat-item">Minimum : </div>
+        <div class="stat-item">Maximum : </div>
+        <div class="stat-item">Total : </div>
     </div>
 </div>
 

@@ -5,7 +5,7 @@
 @inject Data.ApplicationDbContext DbContext
 @inject BulletinServices bServices
 
-<div style="width: 50%; height:300px; margin-bottom:auto">
+<div>
     <ApexChart TItem="Bulletin"
                >
         <ApexPointSeries TItem="Bulletin"
@@ -32,5 +32,12 @@
         {
             Style = new TitleStyle{FontFamily = "Gt-Eesti"}
         };
+        options.Chart = new Chart
+            {
+                Toolbar = new Toolbar
+                {
+                    Tools = new Tools { Zoomin = false, Zoomout = false }
+                }
+            };
     }
 }
