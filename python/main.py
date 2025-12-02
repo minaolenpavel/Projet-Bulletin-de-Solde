@@ -19,11 +19,12 @@ def main():
         config.mail_subject,
         config.debug)
 
+    #mailRetriever.export_emails_date()
     mailRetriever.download_payslips(config.pdf_folder)
     
     bulletins_pdf_paths = list_files(config.pdf_folder)
     for bulletin_pdf_path in bulletins_pdf_paths:
-        csv_folder = create_csv(
+        create_csv(
             bulletin_pdf_path,
             config.csv_folder)
         basename_path = os.path.basename(bulletin_pdf_path)

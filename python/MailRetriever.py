@@ -63,27 +63,41 @@ class MailRetriever:
                             print(f" -> PDF téléchargé : {filename}")
 
     def print_emails_content(self) -> None:
-        if msg.is_multipart():
-            for part in msg.walk():
-                if part.get_content_type() == "text/plain":
-                    print(part.get_payload(decode=True).decode())
-        else:
-            print(msg.get_payload(decode=True).decode())
+        if not self.connect():
+            raise ConnectionError("Error connecting to mailbox")
         
-
-
+        mail_ids = self.fetch_messages()
+        for mail_id in mail_ids:
+            # Récupère le mail pour l'id donnée
+            status, msg_data = self.mail.fetch(mail_id, '(RFC822)')  # récupère le mail complet
+            raw_email = msg_data[0][1]
+            msg = email.message_from_bytes(raw_email)
+            # msg.walk() parcourt toutes les parties du mail
+            if msg.is_multipart():
+                for part in msg.walk():
+                    if part.get_content_type() == "text/plain":
+                        print(part.get_payload(decode=True).decode())
+            else:
+                print(msg.get_payload(decode=True).decode())
     
-    #emails_datetime_list = []
-#
-#
-    #    if debug:
-    #        print("Date :", msg["Date"])
-    #    emails_datetime_list.append(msg["Date"])
-    #    
-#
-    #    
-    #    date_time_list_sorted = sorted(
-    #        emails_datetime_list, 
-    #        key= lambda x : datetime.datetime.strptime(x, utils.datetime_format()), reverse=False)
-    #    json_datetime_list = utils.json_serialize_list(date_time_list_sorted)
-    #    utils.write_json("datetime_list", json_datetime_list, "./")
+    def export_emails_date(self, export_folder:str = "./"):    
+        emails_datetime_list = []
+        if not self.connect():
+            raise ConnectionError("Error connecting to mailbox")
+        
+        mail_ids = self.fetch_messages()
+        for mail_id in mail_ids:
+            # Récupère le mail pour l'id donnée
+            status, msg_data = self.mail.fetch(mail_id, '(RFC822)')  # récupère le mail complet
+            raw_email = msg_data[0][1]
+            msg = email.message_from_bytes(raw_email)
+            if self.debug:
+                print("Date :", msg["Date"])
+            emails_datetime_list.append(msg["Date"])
+
+        date_time_list_sorted = sorted(
+            emails_datetime_list, 
+            key= lambda x : datetime.datetime.strptime(x, utils.datetime_format()), reverse=False)
+        json_datetime_list = utils.json_serialize_list(date_time_list_sorted)
+        utils.write_json(f"datetime_list", json_datetime_list, export_folder)
+        return emails_datetime_list
