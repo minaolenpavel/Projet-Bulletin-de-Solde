@@ -6,7 +6,10 @@
 @inject Data.ApplicationDbContext DbContext
 @inject BulletinServices bServices
 @inject StatisticsServices stats
+@*NO we cannot use another render mode it does not work otherwise*@
 @rendermode InteractiveServer
+@*Because of the render mode, the popover provider must be put directly on the page*@
+<MudPopoverProvider></MudPopoverProvider>
 
 <head>
     <link rel="stylesheet" href="~/app.css"/>
@@ -31,10 +34,26 @@
     <div class="stats-section">
         <div class="stat-item">Nombre de bulletins : @count</div>
         <div class="stat-item">Moyenne par bulletin : @average€</div>
+        <div class="stat-item">Médiane des soldes : @median€</div>
         <div class="stat-item">Minimum : @min€</div>
         <div class="stat-item">Maximum : @max€</div>
-        <div class="stat-item">Standard deviation : @std</div>
+        <MudTooltip Text="@stdComment"
+                    Arrow="false"
+                    Placement="Placement.Right">
+            <div class="stat-item">Standard deviation : @std</div>
+        </MudTooltip>
         <div class="stat-item">Total : @total€</div>
+        <MudTooltip Text="@lastPaymentDate"
+                    Arrow="false"
+                    Placement="Placement.Right"
+                    Color="Color.Secondary">
+            <div class="stat-item">Nombre de jours depuis la dernière solde : @daysSinceLastPayment jours</div>
+        </MudTooltip>
+        <MudTooltip Text="@serviceTimeMonths"
+                    Arrow = "false"
+                    Placement="Placement.Right">
+            <div class="stat-item">Nombre de mois sans bulletin de solde : @missingMonths</div>
+        </MudTooltip>
     </div>
 </div>
 <div class="upload-btn-container">
@@ -55,8 +74,13 @@
     private double median;
     private double count;
     private double std; // Standard deviation
-    private double missingMonths; // How many months they did not pay you hahaha
-    private DateTime timeSinceLastPayment;
+    private Tuple<int, int> missingMonthsInfo; 
+    private string serviceTimeMonths;
+    private string missingMonths; // How many months they did not pay you hahaha
+    private Tuple<DateTime, int> lastPaymentInfo;
+    private string lastPaymentDate;
+    private string daysSinceLastPayment;
+    private string stdComment;
 
 
     protected override async Task OnInitializedAsync()
@@ -67,10 +91,7 @@
         }
         catch (InvalidOperationException)
         {
-            total = 0;
-            average = 0;
-            min = 0;
-            max = 0;
+            ResetStats();
         }
     }
 
@@ -102,7 +123,27 @@
         max = await stats.GetMaxEndIncome();
 
         count = await stats.GetCountBulletins();
+        median = await stats.GetMedianIncome();
+
+        // For the standard deviation part
         std = await stats.GetStandardDeviationIncome();
+        stdComment = await stats.CommentSTD();
+
+        // For the last payment part
+        lastPaymentInfo = await stats.TimeSinceLastPayment();
+        lastPaymentDate = lastPaymentInfo.Item1.ToString("MMMM yyy", new System.Globalization.CultureInfo("fr-FR"));
+        daysSinceLastPayment = lastPaymentInfo.Item2.ToString();
+
+        // For the missing months part
+        missingMonthsInfo = await stats.GetMissingMonthCount();
+        missingMonths = missingMonthsInfo.Item1.ToString();
+        serviceTimeMonths = $" sur {missingMonthsInfo.Item2.ToString()} mois de service";
+
+    }
+    private void ResetStats()
+    {
+        total = max = min = average = median = std = 0;
+        lastPaymentDate = daysSinceLastPayment = missingMonths = serviceTimeMonths = "-";
     }
 
     private async Task OnFilesLoaded()
