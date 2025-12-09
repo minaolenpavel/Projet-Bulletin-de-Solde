@@ -1,15 +1,14 @@
 ﻿@using Bulletin_solde.Data.Models
 @using Bulletin_solde.Data.Services
+@using static MudBlazor.Colors
 @inject Data.ApplicationDbContext DbContext
 @inject BulletinServices bServices
 
-
-<!-- <InputFile OnChange="HandleFileSelected" accept=".json" Multiple /> -->
-
+@*Darken2/#FFA000*@
 <MudFileUpload T="IReadOnlyList<IBrowserFile>" FilesChanged="UploadFiles" MaximumFileCount="100">
     <ActivatorContent>
         <MudButton Variant="Variant.Filled"
-                   Color="Color.Primary"
+                   Style="@($"background-color:{Colors.Amber.Darken2} ; color : white;")"
                    StartIcon="@Icons.Material.Filled.CloudUpload">
             Importer .Json
         </MudButton>
@@ -37,7 +36,6 @@
 
     protected async Task HandleFiles(IReadOnlyList<IBrowserFile> files)
     {
-        //var files = e.GetMultipleFiles(maximumFileCount: 20); // Defines how many files allowed, no matter the size
         foreach (var file in files)
         {
             using var stream = file.OpenReadStream();
