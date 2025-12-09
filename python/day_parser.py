@@ -2,19 +2,6 @@ import re, utils
 from datetime import datetime
 from models import ActivityPeriod
 
-def is_between(date:datetime, start_date:datetime, end_date:datetime):
-    if start_date <= date <= end_date:
-        return True
-    else:
-        return False
-
-def already_exist(date:datetime, periods:list):
-    for period in periods:
-        if is_between(date, period.start_date, period.end_date):
-            return True
-    else:
-        return False
-
 def period_already_exists(new_period, periods):
     """
     Check if new_period is fully contained in any period in periods list.
@@ -45,32 +32,42 @@ for file in all_filenames:
 
 datetime_list = sorted([sorted(list(map(utils.str_to_datetime, x))) for x in data])
 
-
-
-periods = []
-
-print(len(datetime_list))
-
-test = len([x for x in datetime_list if len(x)%2])
-print(test)
-
 periods = []  # list of existing ActivityPeriod objects
 
 for sublist in datetime_list:
     i = 0
     while i < len(sublist):
-        period = ActivityPeriod()
-        period.start_date = sublist[i]
+        start = sublist[i]
         if i+1 < len(sublist):
-            period.end_date = sublist[i+1]
+            end = sublist[i+1]
         else:
-            # single leftover: use the same date as end
-            period.end_date = sublist[i]
-        if not period_already_exists(period, periods):
-            periods.append(period)
+            # leftovers use the same date as end
+            end = sublist[i]
+
+        if start.month != end.month:
+            last_day = utils.last_month_date(start)
+            period1 = ActivityPeriod()
+            period1.start_date = start
+            period1.end_date = datetime(period1.start_date.year, period1.start_date.month, last_day)
+
+            period2 = ActivityPeriod()
+            period2.start_date = datetime(end.year, end.month, 1)
+            period2.end_date = end
+
+            if not period_already_exists(period1, periods):
+                periods.append(period1)
+            if not period_already_exists(period2, periods):
+                periods.append(period2)
+        else:
+            period = ActivityPeriod()
+            period.start_date = start
+            period.end_date = end
+            if not period_already_exists(period, periods):
+                periods.append(period)
+
         i += 2
 
-        
+
 print(len(periods))
 for p in sorted(periods):
     print(p)
