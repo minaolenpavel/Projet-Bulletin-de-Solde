@@ -15,6 +15,19 @@ def already_exist(date:datetime, periods:list):
     else:
         return False
 
+def period_already_exists(new_period, periods):
+    """
+    Check if new_period is fully contained in any period in periods list.
+    new_period: ActivityPeriod
+    periods: list of ActivityPeriod
+    Returns True if contained, False otherwise
+    """
+    for period in periods:
+        if period.start_date <= new_period.start_date and new_period.end_date <= period.end_date:
+            return True
+    return False
+
+
 
 pattern = r'([0-3][0-9]/[0-3][0-9]/[0-9]*)'
 data = []
@@ -31,8 +44,7 @@ for file in all_filenames:
             data.append(list(set(sub_data)))
 
 datetime_list = sorted([sorted(list(map(utils.str_to_datetime, x))) for x in data])
-for dt in datetime_list:
-    print(dt)
+
 
 
 periods = []
@@ -45,74 +57,23 @@ print(test)
 periods = []  # list of existing ActivityPeriod objects
 
 for sublist in datetime_list:
-    # iterate two by two
-    for i in range(0, len(sublist) - 1, 2):
-        start = sublist[i]
-        end = sublist[i+1]
-
-        # skip if start or end is already in an existing period
-        if already_exist(start, periods) or already_exist(end, periods):
-            continue
-
-        # create new period
+    i = 0
+    while i < len(sublist):
         period = ActivityPeriod()
-        period.start_date = start
-        period.end_date = end
-        periods.append(period)
-    
-    # handle leftover if odd-length
-    if len(sublist) % 2 == 1:
-        leftover = sublist[-1]
-        if not already_exist(leftover, periods):
-            period = ActivityPeriod()
-            period.start_date = leftover
-            period.end_date = leftover
+        period.start_date = sublist[i]
+        if i+1 < len(sublist):
+            period.end_date = sublist[i+1]
+        else:
+            # single leftover: use the same date as end
+            period.end_date = sublist[i]
+        if not period_already_exists(period, periods):
             periods.append(period)
+        i += 2
 
+        
+print(len(periods))
 for p in sorted(periods):
     print(p)
 
-print(len(periods))
-
-exit()
-
-for p in datetime_list:
-    if len(p) != 2:
-        period = ActivityPeriod()
-        for date in p:
-            if already_exist(date, periods):
-                pass
-            else:
-                if period.start_date is None:
-                    period.start_date = date
-                else:
-                    period.end_date = date
-                #breakpoint()
-        if period.end_date is None:
-            period.end_date = period.start_date
-        periods.append(period)
-    elif len(p) == 2:
-        if p[0].month != p[1].month:
-            # Will create a datetime object for the first day of the month and the last day of the month
-            # This way we can have properly cut months even if the activity period is throughout two months
-            last_day = utils.last_month_date(p[0])
-            end_date = datetime(p[0].year, p[0].month, last_day)
-            
-            period1 = ActivityPeriod()
-            period1.start_date = p[0]
-            period1.end_date = end_date
-
-            start_date = datetime(p[1].year, p[1].month, 1)
-            period2 = ActivityPeriod()
-            period2.start_date = start_date
-            period2.end_date = p[1]
-
-            periods.append(period1)
-            periods.append(period2)
 
 
-
-
-
-for p in periods:
-    print(p)
