@@ -1,4 +1,4 @@
-import os, json, time
+import os, json, time, datetime, calendar
 
 class Stopwatch:
     def __init__(self):
@@ -72,5 +72,11 @@ def list_files(folder_path:str) -> list:
     dir_list = os.listdir(folder_path)
     return [add_backslash(folder_path) + b for b in dir_list]
 
-def datetime_format() -> str:
+def datetime_format() -> str: # is useless
     return "%a, %d %b %Y %H:%M:%S %z"
+
+def str_to_datetime(string):
+    return datetime.datetime.strptime(string, "%d/%m/%Y")
+
+def last_month_date(date:datetime.datetime):
+    return calendar.monthrange(date.year, date.month)[1]

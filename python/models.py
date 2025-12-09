@@ -1,4 +1,5 @@
 import os, re
+from datetime import *
 
 class Bulletin:
     '''
@@ -21,3 +22,30 @@ class Bulletin:
     
     def __repr__(self):
         return f"Pour la période du {self.Period}, solde de {self.MonthText}, payé {self.Amount}€"
+    
+class ActivityPeriod:
+    def __init__(self):
+        self._start_date = None
+        self._end_date = None
+        self._days_count = None
+
+    @property
+    def start_date(self):
+        return self._start_date
+
+    @start_date.setter
+    def start_date(self, date):
+        self._start_date = date
+
+    @property
+    def end_date(self):
+        return self._end_date
+    
+    @end_date.setter
+    def end_date(self, date):
+        self._end_date = date
+
+    def __lt__(self, other):
+        return self.end_date < other.start_date
+    def __repr__(self):
+        return f"periode du {self.start_date} au {self.end_date}"
