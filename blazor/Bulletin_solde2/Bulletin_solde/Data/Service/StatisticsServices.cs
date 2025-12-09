@@ -58,19 +58,27 @@ namespace Bulletin_solde.Data.Service
         }
         public async Task<double> GetMedianIncome()
         {
-            List<double> amounts = await _context.Bulletins.Select(b => b.Amount).ToListAsync();
-            amounts.Sort();
-            int mid = amounts.Count / 2;
-            double median = 0;
-            if(mid%2 != 0)
+            try
             {
-                median = amounts[mid];
+                List<double> amounts = await _context.Bulletins.Select(b => b.Amount).ToListAsync();
+                amounts.Sort();
+                int mid = amounts.Count / 2;
+                double median = 0;
+                if (mid % 2 != 0)
+                {
+                    median = amounts[mid];
+                }
+                else
+                {
+                    median = (amounts[mid - 1] + amounts[mid] / 2);
+                }
+                return median;
             }
-            else
+            catch
             {
-                median = (amounts[mid - 1] + amounts[mid] / 2);
+                return 0;
             }
-            return median;
+            
         }
 
         public async Task<Tuple<int, int>> GetMissingMonthCount()
@@ -87,7 +95,7 @@ namespace Bulletin_solde.Data.Service
 
         public async Task<Tuple<DateTime, int>> TimeSinceLastPayment()
         {
-            List < DateTime> bulletinDates = await _context.Bulletins.Select(b => b.Date).ToListAsync();
+            List <DateTime> bulletinDates = await _context.Bulletins.Select(b => b.Date).ToListAsync();
             bulletinDates.Order();
             DateTime lastPayment = bulletinDates.Last();
             double totalDays = (DateTime.Now - lastPayment).TotalDays;

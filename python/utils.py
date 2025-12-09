@@ -23,7 +23,7 @@ def filename_without_extension(path:str) -> str:
     '''
     return os.path.splitext(os.path.basename(path))[0]
 
-def month_name_from_number(month_num:int) -> str: # Is prob obs, idk will keep it for now
+def month_name_from_number(month_num:int) -> str: # Is prob obsolete idk will keep it for now
     month_dict = {
                 1 : "janvier",
                 2 : "février",

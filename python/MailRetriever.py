@@ -36,7 +36,7 @@ class MailRetriever:
             return []
         return mail_ids[0].split() # Important to precise [0] because it's a single element list, error otherwise
     
-    def download_payslips(self, download_folder:str):
+    def download_payslips(self, download_folder:str) -> str:
         if not self.connect():
             raise ConnectionError("Error connecting to mailbox")
         

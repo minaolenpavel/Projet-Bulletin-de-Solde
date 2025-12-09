@@ -9,12 +9,12 @@ namespace Bulletin_solde.Data.Models
         public int Id { get; set; }
         public int Year { get; set; }
         public int Month { get; set; }
-        public string Period { get; set; }
         public double Amount { get; set; }
         public string FilePath { get; set; }
+        public int ArrivalDay { get; set; }
 
         [NotMapped] // EF Core ignores this field
-        public DateTime Date => new DateTime(Year, Month, 1);
+        public DateTime Date => new DateTime(Year, Month, ArrivalDay);
 
     }
 }

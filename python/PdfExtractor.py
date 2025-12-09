@@ -19,7 +19,7 @@ class PdfExtractor:
             period = m.group()
             month = m.group(1)
             year = m.group(2)
-            return (period, int(month), int(year))
+            return (int(month), int(year))
         
     def get_amount(self, path:str) -> float:
         '''

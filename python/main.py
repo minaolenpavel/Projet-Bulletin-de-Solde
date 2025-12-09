@@ -7,7 +7,7 @@ from config import Config
 import os
 
 def create_bulletin(amount:float, period:tuple, pdf_path:str) -> Bulletin:
-    bulletin = Bulletin(amount, period[0], period[1], period[2], os.path.abspath(pdf_path))
+    bulletin = Bulletin(amount, period[0], period[1], os.path.abspath(pdf_path))
     return bulletin
 
 def main():
