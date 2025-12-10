@@ -1,40 +1,56 @@
 import re, utils
+from Models import ActivityPeriod
 
 pattern = r'([0-3][0-9]/[0-3][0-9]/[0-9]*)'
 
-desc = []
-start_dates = []
-with open("test3.csv", mode="r", encoding='utf-8') as file:
-    ok = False
+headers = []
+dates = []
+with open("test2.csv", mode="r", encoding='utf-8') as file:
+    detected_header = False
     detected_date = False
     for l in file:
         if l.strip() == "Solde de base mensuelle":
-            ok = True
+            detected_header = True
         elif re.match(pattern, l):
-            ok = False
+            detected_header = False
             detected_date = True
-
-        if ok :
-            desc.append(l.strip())
+        if detected_header :
+            headers.append(l.strip())
             date_desc = re.search(pattern, l)
             if date_desc:
                 date = date_desc.group(1)
-                start_dates.append(date)
-                #breakpoint()
+                dates.append(date)
         elif detected_date : 
             date = re.match(pattern, l)
             if date :
                 if len(l.strip()) > 10 and " " not in l:
-                    #breakpoint()
                     ok_date = l.replace('"', "").strip().split(",")
-                    start_dates.extend(ok_date)
+                    dates.extend(ok_date)
                 else:
                     ok_date = date.group(1)
-                    start_dates.append(ok_date.replace(" ", ""))
+                    dates.append(ok_date.replace(" ", ""))
 
-final_dates = [d for d in start_dates if re.match(pattern, d) ]
-breakpoint()
-print()
+# Some noise is left even after parsing
+final_dates = [d for d in dates if re.match(pattern, d) ]
+
+
+index_solde_mensuelle = []
+for i, element in enumerate(headers):
+    if element.strip() == "Solde de base mensuelle":
+        index_solde_mensuelle.append(i)
+
+periods = []
+for i in index_solde_mensuelle:
+    period = ActivityPeriod()
+    start = final_dates[i]
+    end_index = int(i + len(final_dates)/2)
+    end = final_dates[end_index]
+    period.start_date = start
+    period.end_date = end
+    period.calc_days()
+    periods.append(period)
+
+
 
 
 

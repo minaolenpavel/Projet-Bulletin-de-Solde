@@ -1,6 +1,4 @@
-import os, re
-from datetime import *
-
+import os, re, utils, datetime
 class Bulletin:
     '''
     Class that is used to be written in Json for C# communications. 
@@ -42,7 +40,11 @@ class ActivityPeriod:
 
     @start_date.setter
     def start_date(self, date):
-        self._start_date = date
+        if isinstance(date, datetime.date):
+            self._start_date = date
+        else:
+            new_date = utils.str_to_datetime(date)
+            self.start_date = new_date
 
     @property
     def end_date(self):
@@ -50,7 +52,11 @@ class ActivityPeriod:
     
     @end_date.setter
     def end_date(self, date):
-        self._end_date = date
+        if isinstance(date, datetime.date):
+            self._end_date = date
+        else:
+            new_date = utils.str_to_datetime(date)
+            self._end_date = new_date
 
     def __lt__(self, other):
         return self.end_date < other.start_date
@@ -59,7 +65,7 @@ class ActivityPeriod:
     
 class MonthActivity:
     def __init__(self, year:int, month:int):
-        self.year
-        self.month
+        self.year = year
+        self.month = month
         self.periods = []
         self.days_count = 0 
