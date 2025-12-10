@@ -1,7 +1,7 @@
 from MailRetriever import *
 from PdfExtractor import *
 from csv_parser import *
-from models import *
+from Models import *
 from utils import *
 from config import Config
 import os

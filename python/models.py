@@ -27,7 +27,14 @@ class ActivityPeriod:
     def __init__(self):
         self._start_date = None
         self._end_date = None
-        self._days_count = None
+        self.days_count = 0
+
+    def calc_days(self) -> int:
+        delta = self.end_date - self.start_date
+        if delta.days == 0:
+            self.days_count = 1
+        else:
+            self.days_count = delta.days
 
     @property
     def start_date(self):
@@ -49,3 +56,10 @@ class ActivityPeriod:
         return self.end_date < other.start_date
     def __repr__(self):
         return f"periode du {self.start_date} au {self.end_date}"
+    
+class MonthActivity:
+    def __init__(self, year:int, month:int):
+        self.year
+        self.month
+        self.periods = []
+        self.days_count = 0 
