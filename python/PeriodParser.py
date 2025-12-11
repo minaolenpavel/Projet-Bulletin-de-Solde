@@ -18,9 +18,9 @@ class PeriodParser:
     and their corresponding date periods, despite the inconsistent CSV
     format.
     """
-    def __init__(self, filename:str, folder:str):
-        self.filename = utils.filename_without_extension(filename)
+    def __init__(self, folder:str, debug = False):
         self.folder = folder
+        self.debug = debug
 
     # Could do the same func for years but it never happened so...
     def fix_months_mismatch(self, start, end) -> tuple:
@@ -35,12 +35,16 @@ class PeriodParser:
         return (period1, period2)
 
 
-    def extract_periods_data(self) -> tuple:
-        path = self.filename
+    def extract_periods_data(self, filename) -> tuple:
+        path = utils.filename_without_extension(filename)
         pattern = r'([0-3][0-9]/[0-3][0-9]/[0-9]*)'
         headers = []
         dates = []
-        with open(f"{self.folder}/{path}-page-1-table-2.csv", mode="r", encoding='utf-8') as file:
+        if self.debug:
+            path = filename
+        else:
+            path = f"{self.folder}/{path}-page-1-table-2.csv"
+        with open(path, mode="r", encoding='utf-8') as file:
             detected_header = False
             detected_date = False
             for l in file:
@@ -74,8 +78,8 @@ class PeriodParser:
         final_dates = [d for d in dates if re.match(pattern, d)]
         return (final_dates, headers)
 
-    def create_periods(self) -> list:
-        dates, headers = self.extract_periods_data()
+    def create_periods(self, filename:str) -> list:
+        dates, headers = self.extract_periods_data(filename)
 
         index_solde_mensuelle = []
         for i, element in enumerate(headers):
@@ -86,7 +90,7 @@ class PeriodParser:
         for i in index_solde_mensuelle:
             period = ActivityPeriod()
             start = dates[i]
-            end_index = int(i + len(dates)/2)
+            end_index = int(i + len(dates)/2)+1
             end = dates[end_index]
 
             start_date = utils.str_to_datetime(start)
@@ -103,27 +107,25 @@ class PeriodParser:
                 period.end_date = end
                 period.calc_days()
                 periods.append(period)
+        breakpoint()
         return periods
+    
+    def parse_folder(self) -> list:
+        parsed_periods = []
+        filenames = utils.list_files("bulletins_solde_pdf")
+        for file in filenames:
+            periods = self.create_periods(file)
+            parsed_periods.extend(periods)
+        return parsed_periods
 
 if __name__ == "__main__":
     csv_folder = "bulletins_solde_csv"
-    filenames = utils.list_files("bulletins_solde_pdf")
-    all_periods = []
-    for file in filenames:
-        parser = PeriodParser(file, csv_folder)
-        periods = parser.create_periods()
-        all_periods.extend(periods)
-    all_days = 0
-    for p in all_periods:
-        all_days+=p.days_count
-        print(p, p.days_count)
-    print(all_days)
-
-# What's done in here is parsing of the messy csv files
-# I noticed there was some sort of "logic" if we can call it this way
-# The lines that interest me are the periods
-# But it's very difficult to understand what is what
-# Unless there is a logic in this
-# In that case there is always x*2 more dates than description such as "solde mensuelle"
-# From this we just have to put in a list all descriptions and all dates
-# Then we're sure that the period that matches the description is always periods[posInDescList + len(periods)/2]
+    parser = PeriodParser(csv_folder, True)
+    periods = parser.create_periods("juin2.csv")
+    print(periods)
+    #all_periods = parser.parse_folder()
+    #all_days = 0
+    #for p in all_periods:
+    #    all_days+=p.days_count
+    #    print(p, p.days_count)
+    #print(all_days)
