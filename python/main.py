@@ -3,6 +3,7 @@ from PdfExtractor import *
 from csv_parser import *
 from Models import *
 from utils import *
+from MonthManager import *
 from config import Config
 import os
 
@@ -10,9 +11,7 @@ def create_bulletin(amount:float, period:tuple, pdf_path:str) -> Bulletin:
     bulletin = Bulletin(amount, period[0], period[1], os.path.abspath(pdf_path))
     return bulletin
 
-def main():
-    config = Config()
-
+def main(config:Config):
     mailRetriever = MailRetriever(
         config.username,
         config.password,
@@ -42,12 +41,23 @@ def main():
             json_data,
             config.json_folder)
 
+def get_months(config:Config):
+    month_manager = MonthManager(config.csv_folder, config.pdf_folder, "exported_activity", "./")
+    month_manager.create_months()
+    for m in month_manager.months:
+        print(m)
+    print(month_manager)
+    month_manager.export_months_json()
 
 if __name__ == "__main__":
     stopwatch = Stopwatch()
     stopwatch.start()
+    
+    config = Config()
 
-    main()
+
+    #main(config)
+    get_months(config)
 
     stopwatch.stop()
     print(f"{stopwatch.total_time} secondes pour éxecuter tout le script")

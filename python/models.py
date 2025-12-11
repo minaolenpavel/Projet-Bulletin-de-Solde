@@ -55,6 +55,13 @@ class ActivityPeriod:
             new_date = utils.str_to_datetime(date)
             self._end_date = new_date
 
+    def to_dict(self):
+        return{
+            "StartDate" : self.start_date.isoformat(),
+            "EndDate" : self.end_date.isoformat(),
+            "DaysCount": self.calc_days()
+        }
+
     def __lt__(self, other):
         return self.end_date < other.start_date
     def __repr__(self):
@@ -67,15 +74,23 @@ class MonthActivity:
         self.periods = []
         self.days_count = 0 
     
-    def CalcDaysCount(self):
+    def calc_days_count(self):
         count = 0
         for p in self.periods:
             count+=p.days_count
-        self.DaysCount = count
+        self.days_count = count
         return count
     
+    def to_dict(self):
+        return{
+            "Year": self.year,
+            "Month": self.month,
+            "DaysCount": self.calc_days_count(),
+            "Periods": [p.to_dict() for p in self.periods]
+        }
+
     def __str__(self):
-        return f"Mois de {utils.month_name_from_number(self.month)} {self.year}"
+        return f"{self.calc_days_count()} jours sur le mois de {utils.month_name_from_number(self.month)} {self.year}"
 
     def __repr__(self):
-        return f"{self.CalcDaysCount()} sur le mois du {self.month}/{self.year}"
+        return f"{self.calc_days_count()} jours sur le mois du {self.month}/{self.year}"

@@ -83,7 +83,6 @@ class PeriodParser:
 
     def create_periods(self, filename:str) -> list:
         dates, headers = self.extract_periods_data(filename)
-
         periods = []
         for i, element in enumerate(headers):
             if element.strip() == "Solde de base mensuelle":
@@ -95,7 +94,6 @@ class PeriodParser:
                         end = utils.str_to_datetime(dates[i+1])
                     else:
                         pass
-
                 if start.month != end.month:
                     fixed_periods = self.fix_months_mismatch(start, end)
                     periods.extend(fixed_periods)
@@ -104,9 +102,6 @@ class PeriodParser:
                     new_period.end_date = end
                     new_period.calc_days()
                     periods.append(new_period)
-            
-
-
         return periods
     
     def parse_folder(self) -> list:
