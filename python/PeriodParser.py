@@ -2,6 +2,22 @@ import re, utils, datetime
 from Models import ActivityPeriod
 
 class PeriodParser:
+    """
+    This module parses irregular CSV files containing datetime data.  
+    The structure of these files follows an implicit pattern: for every
+    descriptive entry (e.g., "solde mensuelle"), there are always twice
+    as many date entries (start date - end date).
+
+    To reliably extract periods, we first collect all descriptions and all
+    dates into separate lists. Because of the consistent 2:1 ratio, the
+    period associated with a given description can be retrieved using:
+
+        periods[index_in_description_list + len(periods) // 2]
+
+    This logic allows us to reconstruct the mapping between descriptions
+    and their corresponding date periods, despite the inconsistent CSV
+    format.
+    """
     def __init__(self, filename:str, folder:str):
         self.filename = utils.filename_without_extension(filename)
         self.folder = folder
@@ -97,9 +113,11 @@ if __name__ == "__main__":
         parser = PeriodParser(file, csv_folder)
         periods = parser.create_periods()
         all_periods.extend(periods)
+    all_days = 0
     for p in all_periods:
         all_days+=p.days_count
         print(p, p.days_count)
+    print(all_days)
 
 # What's done in here is parsing of the messy csv files
 # I noticed there was some sort of "logic" if we can call it this way

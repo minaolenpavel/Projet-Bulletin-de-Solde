@@ -69,6 +69,13 @@ class MonthActivity:
     
     def CalcDaysCount(self):
         count = 0
-        for p in self.Periods:
+        for p in self.periods:
             count+=p.days_count
         self.DaysCount = count
+        return count
+    
+    def __str__(self):
+        return f"Mois de {utils.month_name_from_number(self.month)} {self.year}"
+
+    def __repr__(self):
+        return f"{self.CalcDaysCount()} sur le mois du {self.month}/{self.year}"
