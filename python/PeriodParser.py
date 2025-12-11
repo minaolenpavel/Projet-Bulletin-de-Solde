@@ -28,10 +28,13 @@ class PeriodParser:
         period1 = ActivityPeriod()
         period1.start_date = start
         period1.end_date = datetime.datetime(start.year, start.month, last_day)
+        period1.calc_days()
 
         period2 = ActivityPeriod()
         period2.start_date = datetime.datetime(end.year, end.month, 1)
         period2.end_date = end
+        period2.calc_days()
+        
         return (period1, period2)
 
 
@@ -81,33 +84,29 @@ class PeriodParser:
     def create_periods(self, filename:str) -> list:
         dates, headers = self.extract_periods_data(filename)
 
-        index_solde_mensuelle = []
+        periods = []
         for i, element in enumerate(headers):
             if element.strip() == "Solde de base mensuelle":
-                index_solde_mensuelle.append(i)
+                new_period = ActivityPeriod()
+                start = utils.str_to_datetime(dates[i])
+                end = utils.str_to_datetime(dates[i + (len(dates)//2)])
+                if start == end:
+                    if len(headers)%2 == 0:
+                        end = utils.str_to_datetime(dates[i+1])
+                    else:
+                        pass
 
-        periods = []
-        for i in index_solde_mensuelle:
-            period = ActivityPeriod()
-            start = dates[i]
-            end_index = int(i + len(dates)/2)+1
-            end = dates[end_index]
+                if start.month != end.month:
+                    fixed_periods = self.fix_months_mismatch(start, end)
+                    periods.extend(fixed_periods)
+                else:
+                    new_period.start_date = start
+                    new_period.end_date = end
+                    new_period.calc_days()
+                    periods.append(new_period)
+            
 
-            start_date = utils.str_to_datetime(start)
-            end_date = utils.str_to_datetime(end)
 
-            if start_date.month != end_date.month:
-                fixed_periods = self.fix_months_mismatch(start_date, end_date)
-                for p in fixed_periods:
-                    p.calc_days()
-                periods.append(fixed_periods[0])
-                periods.append(fixed_periods[1])
-            else:
-                period.start_date = start
-                period.end_date = end
-                period.calc_days()
-                periods.append(period)
-        breakpoint()
         return periods
     
     def parse_folder(self) -> list:
@@ -120,12 +119,12 @@ class PeriodParser:
 
 if __name__ == "__main__":
     csv_folder = "bulletins_solde_csv"
-    parser = PeriodParser(csv_folder, True)
-    periods = parser.create_periods("juin2.csv")
-    print(periods)
-    #all_periods = parser.parse_folder()
-    #all_days = 0
-    #for p in all_periods:
-    #    all_days+=p.days_count
-    #    print(p, p.days_count)
-    #print(all_days)
+    parser = PeriodParser(csv_folder, False)
+    #periods = parser.create_periods("juin2.csv")
+    #print(periods)
+    all_periods = parser.parse_folder()
+    all_days = 0
+    for p in all_periods:
+        all_days+=p.days_count
+        print(p, p.days_count)
+    print(all_days)
