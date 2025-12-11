@@ -29,10 +29,7 @@ class ActivityPeriod:
 
     def calc_days(self) -> int:
         delta = self.end_date - self.start_date
-        if delta.days == 0:
-            self.days_count = 1
-        else:
-            self.days_count = delta.days
+        self.days_count = delta.days + 1
 
     @property
     def start_date(self):
@@ -69,3 +66,9 @@ class MonthActivity:
         self.month = month
         self.periods = []
         self.days_count = 0 
+    
+    def CalcDaysCount(self):
+        count = 0
+        for p in self.Periods:
+            count+=p.days_count
+        self.DaysCount = count
