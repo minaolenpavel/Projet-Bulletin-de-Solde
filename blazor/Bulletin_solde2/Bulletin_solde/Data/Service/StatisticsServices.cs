@@ -4,6 +4,7 @@ using System;
 using System.Runtime.CompilerServices;
 using Bulletin_solde.Data.Models;
 using MudBlazor;
+using System.Linq.Expressions;
 
 namespace Bulletin_solde.Data.Service
 {
@@ -16,61 +17,93 @@ namespace Bulletin_solde.Data.Service
             _context = context;
         }
 
-        public async Task<double> GetTotalIncome()
+        public async Task<double> GetTotalAsync<TEntity>(
+            Expression<Func<TEntity, double>> selector)
+            where TEntity : class
         {
-            // Amount is declared as decimal in C# class but sqlite does not support summing decimal
-            // So we need to convert to double
-            double total = await _context.Bulletins.Select(b => b.Amount).SumAsync();
-            return Math.Round(total,2);
+            double total = (double)await _context.Set<TEntity>()
+                .Select(selector)
+                .SumAsync();
+            return Math.Round((double)total,2);
         }
-        public async Task<double> GetAverageIncome()
+        public async Task<double> GetAverageAsync<TEntity>(
+            Expression<Func<TEntity, double>> selector)
+            where TEntity : class
         {
-            double average = await _context.Bulletins.Select(b => b.Amount).AverageAsync();
+            double average = (double)await _context.Set<TEntity>()
+                .Select(selector)
+                .AverageAsync();
             return Math.Round(average, 2);
         }
-        public async Task<double> GetMinStartIncome()
+        public async Task<double> GetMinAsync<TEntity>(
+            Expression<Func<TEntity, double>> selector)
+            where TEntity : class
         {
-            double minStart = await _context.Bulletins.Select(b => b.Amount).MinAsync();
-            return Math.Round(minStart, 2);
+            double min = (double)await _context.Set<TEntity>()
+                .Select(selector)
+                .MinAsync();
+            return Math.Round(min, 2);
         }
-        public async Task<double> GetMaxEndIncome()
+        public async Task<double> GetMaxAsync<TEntity>(
+            Expression<Func<TEntity, double>> selector) 
+            where TEntity : class
         {
-            double maxEnd = await _context.Bulletins.Select(b => b.Amount).MaxAsync();
-            return Math.Round(maxEnd, 2);
+            double max = (double)await _context.Set<TEntity>()
+                .Select(selector)
+                .MaxAsync();
+            return Math.Round(max, 2);
         }
-        public async Task<int> GetCountBulletins()
+        public async Task<int> GetCountAsync<TEntity>(
+            Expression<Func<TEntity, int>> selector)
+            where TEntity : class
         {
-            int countBulletins = await _context.Bulletins.Select(b =>b).Distinct().CountAsync();
-            return countBulletins;
+            int count = await _context.Set<TEntity>()
+                .Select(selector)
+                .Distinct()
+                .CountAsync();
+            return count;
         }
-        public async Task<double> GetStandardDeviationIncome()
+        public async Task<double> GetStandardDeviationAsync<TEntity>(
+            Expression<Func<TEntity, double>> selector)
+            where TEntity : class
         {
-            List<Bulletin> bulletins = await _context.Bulletins.ToListAsync();
+            List<TEntity> entities = await _context.Set<TEntity>()
+                .ToListAsync();
+            var set = _context.Set<TEntity>();
             // Find the mean
-            double avg = await _context.Bulletins.Select(b => b.Amount).AverageAsync();
+            double avg = await _context.Set<TEntity>()
+                .Select(selector)
+                .AverageAsync();
             // For each data point, find the square root of its distance to the mean
-            var powDist = bulletins.Select(b => Math.Pow(Math.Abs(b.Amount - avg), 2)).ToList();
+            var param = selector.Parameters[0];
+            var squaredBody = Expression.Multiply(selector.Body, selector.Body);
+            var squareSelector = Expression.Lambda<Func<TEntity, double>>(squaredBody, param);
+            var averageSquare = await set.Select(squareSelector).AverageAsync();
+            var std = Math.Sqrt((double)(averageSquare - avg * avg));
             // Sum the values
-            double sqrtDistSum = powDist.Sum();
             // Divide by the number of data points
-            double result = Math.Sqrt(sqrtDistSum / await GetCountBulletins());
-            return Math.Round(result, 3);
+            
+            return Math.Round(std, 3);
         }
-        public async Task<double> GetMedianIncome()
+        public async Task<double> GetMedianAsync<TEntity>(
+            Expression<Func<TEntity, double>> selector)
+            where TEntity : class
         {
             try
             {
-                List<double> amounts = await _context.Bulletins.Select(b => b.Amount).ToListAsync();
-                amounts.Sort();
-                int mid = amounts.Count / 2;
+                List<double> numbers = await _context.Set<TEntity>()
+                    .Select(selector)
+                    .ToListAsync();
+                numbers.Sort();
+                int mid = numbers.Count / 2;
                 double median = 0;
                 if (mid % 2 != 0)
                 {
-                    median = amounts[mid];
+                    median = numbers[mid];
                 }
                 else
                 {
-                    median = (amounts[mid - 1] + amounts[mid] / 2);
+                    median = (numbers[mid - 1] + numbers[mid] / 2);
                 }
                 return median;
             }
@@ -81,33 +114,13 @@ namespace Bulletin_solde.Data.Service
             
         }
 
-        public async Task<Tuple<int, int>> GetMissingMonthCount()
+        public async Task<string> CommentSTD<TEntity>(
+            Expression<Func<TEntity, double>> selector)
+            where TEntity : class
         {
-            DateTime dateIncorpo = new DateTime(2023, 11, 1);
-            Tuple<DateTime, int> lastPayment = await TimeSinceLastPayment();
-            DateTime lastPaymentDate = lastPayment.Item1;
-            
-            int totalMonths = (int)((lastPaymentDate - dateIncorpo).TotalDays/30);
-            int bulletinsCount = await GetCountBulletins();
-            int missingMonths = totalMonths - bulletinsCount;
-            return Tuple.Create(missingMonths, totalMonths);
-        }
-
-        public async Task<Tuple<DateTime, int>> TimeSinceLastPayment()
-        {
-            List <DateTime> bulletinDates = await _context.Bulletins.Select(b => b.Date).ToListAsync();
-            bulletinDates.Order();
-            DateTime lastPayment = bulletinDates.Last();
-            double totalDays = (DateTime.Now - lastPayment).TotalDays;
-            int timeSinceLastPayment = (int)totalDays;
-            return Tuple.Create(lastPayment,timeSinceLastPayment);
-        }
-
-        public async Task<string> CommentSTD()
-        {
-            double std = await GetStandardDeviationIncome();
-            double max = await GetMaxEndIncome();
-            double min = await GetMinStartIncome();
+            double std = await GetStandardDeviationAsync<TEntity>(selector);
+            double max = await GetMaxAsync<TEntity>(selector);
+            double min = await GetMinAsync<TEntity>(selector);
             double range = max - min;
             if (range == 0)
             {

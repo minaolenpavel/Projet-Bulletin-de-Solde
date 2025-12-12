@@ -124,25 +124,25 @@
     private async Task LoadBulletins()
     {
         bulletins = await bServices.GetAllBulletins();
-        total = await stats.GetTotalIncome();
-        average = await stats.GetAverageIncome();
-        min = await stats.GetMinStartIncome();
-        max = await stats.GetMaxEndIncome();
+        total = await stats.GetTotalAsync<Bulletin>(b => (double)b.Amount);
+        average = await stats.GetAverageAsync<Bulletin>(b => (double)b.Amount);
+        min = await stats.GetMinAsync<Bulletin>(b => (double)b.Amount);
+        max = await stats.GetMaxAsync<Bulletin>(b => (double)b.Amount);
 
-        count = await stats.GetCountBulletins();
-        median = await stats.GetMedianIncome();
+        count = await stats.GetCountAsync<Bulletin>(b => b.Id);
+        median = await stats.GetMedianAsync<Bulletin>(b => b.Amount);
 
         // For the standard deviation part
-        std = await stats.GetStandardDeviationIncome();
-        stdComment = await stats.CommentSTD();
+        std = await stats.GetStandardDeviationAsync<Bulletin>(b => (double)b.Amount);
+        stdComment = await stats.CommentSTD<Bulletin>(b => b.Amount);
 
         // For the last payment part
-        lastPaymentInfo = await stats.TimeSinceLastPayment();
+        lastPaymentInfo = await bServices.TimeSinceLastPayment();
         lastPaymentDate = lastPaymentInfo.Item1.ToString("MMMM yyy", new System.Globalization.CultureInfo("fr-FR"));
         daysSinceLastPayment = lastPaymentInfo.Item2.ToString();
 
         // For the missing months part
-        missingMonthsInfo = await stats.GetMissingMonthCount();
+        missingMonthsInfo = await bServices.GetMissingMonthCount();
         missingMonths = missingMonthsInfo.Item1.ToString();
         serviceTimeMonths = $" sur {missingMonthsInfo.Item2.ToString()} mois de service";
 
