@@ -45,7 +45,7 @@ def get_months(config:Config):
     month_manager = MonthManager(config.csv_folder, config.pdf_folder, "exported_activity", "./")
     month_manager.create_months()
     for m in month_manager.months:
-        print(m)
+        m.calc_days_count()
     print(month_manager)
     month_manager.export_months_json()
 

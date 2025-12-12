@@ -30,6 +30,7 @@ class ActivityPeriod:
     def calc_days(self) -> int:
         delta = self.end_date - self.start_date
         self.days_count = delta.days + 1
+        return delta.days
 
     @property
     def start_date(self):
