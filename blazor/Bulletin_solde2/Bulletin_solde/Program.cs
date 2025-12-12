@@ -18,7 +18,8 @@ builder.Services.AddServerSideBlazor()
         options.MaximumReceiveMessageSize = 10 * 1024 * 1024; // 10 MB
     });
 builder.Services.AddMudServices();
-builder.Services.AddScoped<StatisticsServices>();   
+builder.Services.AddScoped<StatisticsServices>();
+builder.Services.AddScoped<ActivityServices>();
 
 var app = builder.Build();
 

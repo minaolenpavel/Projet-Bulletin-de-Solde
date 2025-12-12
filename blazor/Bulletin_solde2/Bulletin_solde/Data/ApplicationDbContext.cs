@@ -10,5 +10,6 @@ namespace Bulletin_solde.Data
         {
         }
         public DbSet<Bulletin> Bulletins { get; set; }
+        public DbSet<MonthActivity> MonthActivities { get; set; }
     }
 }

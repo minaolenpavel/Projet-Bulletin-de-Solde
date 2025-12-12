@@ -75,22 +75,22 @@ h1:focus {
     font-style: normal;
 }
 
-*{
-    font-family:Gt-Eesti;
+* {
+    font-family: Gt-Eesti;
 }
 
 body {
     background-color: #f0f0f0;
 }
 
-select{
-    padding:3px;
+select {
+    padding: 3px;
 }
 
-.linechart-options{
-    display:flex;
-    align-items : center;
-    gap : 3rem;
+.linechart-options {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
 }
 
 .dashboard-container {
@@ -99,8 +99,8 @@ select{
     align-items: flex-start; /* align tops of the sections */
     justify-content: center; /* optional: center horizontally in page */
     margin-top: 5%; /* keep your top margin */
-    margin-left : 40px;
-    margin-right : 40px;
+    margin-left: 40px;
+    margin-right: 40px;
 }
 
 .linechart-section {
@@ -121,18 +121,12 @@ select{
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     background-color: #f5f5f5;
 }
+
 .stat-item {
     padding: 0.5rem 0;
     border-bottom: 1px solid #e0e0e0;
 }
-
-.stat-item:last-child {
-    border-bottom: none; /* remove border on the last item */
+.upload-btn-container {
+    margin-top: 20px;
+    margin-left: 40px; /* Same as the dashboard */
 }
-
-.upload-btn-container{
-    margin-top:20px;
-    margin-left:40px; /* Same as the dashboard */
-}
-
-
