@@ -14,6 +14,7 @@ class MailRetriever:
         '''
         Will return false if it did not manage to connect to mailbox
         '''
+        if self.debug : print("Connectin to mailbox...")
         self.mail = imaplib.IMAP4_SSL(self.imap_ssl_host)
         status = self.mail.login(
             self.username,
@@ -23,6 +24,7 @@ class MailRetriever:
             if self.debug:
                 boxes = self.mail.list()
                 print(boxes)
+                print("Connection to mailbox successful!")
             # Automatically selects 'inbox'
             self.mail.select()
             return True

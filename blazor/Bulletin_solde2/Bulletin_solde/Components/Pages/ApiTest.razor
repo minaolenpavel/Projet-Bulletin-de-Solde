@@ -1,0 +1,56 @@
+﻿@page "/call-web-api"
+@using System.Text.Json
+@using System.Text.Json.Serialization
+@inject HttpClient Client
+
+<h1>Call FastAPI from Blazor WebAssembly</h1>
+
+@if (getApiError || apiResponse is null)
+{
+    <p>Unable to get response from FastAPI. Please try again later.</p>
+}
+else
+{
+    <p>@apiResponse.Message</p>
+}
+
+@code {
+    private ApiResponse? apiResponse;
+    private bool getApiError;
+    private bool shouldRender;
+
+    protected override bool ShouldRender() => shouldRender;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Get,
+                "http://127.0.0.1:8000/");
+
+            using var response = await Client.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                using var responseStream = await response.Content.ReadAsStreamAsync();
+                apiResponse = await JsonSerializer.DeserializeAsync<ApiResponse>(responseStream);
+            }
+            else
+            {
+                getApiError = true;
+            }
+        }
+        catch
+        {
+            getApiError = true;
+        }
+
+        shouldRender = true;
+    }
+
+    public class ApiResponse
+    {
+        [JsonPropertyName("message")]
+        public string? Message { get; set; }
+    }
+}

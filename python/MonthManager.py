@@ -1,4 +1,4 @@
-from Models import ActivityPeriod, MonthActivity
+from models import ActivityPeriod, MonthActivity
 from PeriodParser import *
 import json
 

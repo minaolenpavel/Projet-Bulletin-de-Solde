@@ -14,4 +14,4 @@ class Config:
     csv_folder = "bulletins_solde_csv"
 
     json_folder  = "bulletins_solde_json"
-    debug = False
+    debug = True
