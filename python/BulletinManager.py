@@ -4,9 +4,9 @@ from models import Bulletin
 
 
 class BulletinManager:
-    def __init__(self, csv_folder:str, pdf_folder:str, export_path:str, export_filename:str):
-        self.export_filename = export_filename
-        self.export_path = export_path
+    def __init__(self, csv_folder:str, pdf_folder:str):
+        #self.export_filename = export_filename
+        #self.export_path = export_path
         self.csv_folder = csv_folder
         self.pdf_folder = pdf_folder
         self.pdf_filenames = utils.list_files(pdf_folder)
