@@ -16,4 +16,4 @@ class Config:
     json_folder  = "bulletins_solde_json"
     debug = True
 
-    db_path = "bulletins2.db"
+    db_path = "../blazor/Bulletin_solde2/Bulletin_solde/bulletins.db"

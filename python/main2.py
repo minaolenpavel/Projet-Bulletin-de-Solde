@@ -41,17 +41,8 @@ def get_all(config:Config):
             bulletin_pdf_path)
     
     db = DB(config.db_path)
-    db.write("""
-    CREATE TABLE IF NOT EXISTS Bulletins(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        Amount REAL NOT NULL,
-        ArrivalDay INTEGER NOT NULL,
-        FilePath TEXT NOT NULL,
-        Month INTEGER NOT NULL,
-        Year INTEGER NOT NULL)
-    """)
     bulletins_data = [(b.amount, b.arrival_day, b.file_path, b.month, b.year) for b in bulletin_manager.bulletins]
-    db.write_many("INSERT INTO Bulletins (Amount, ArrivalDay, FilePath, Month, Year) VALUES (?, ?, ?, ?, ?)", bulletins_data)
+    db.write_many("INSERT INTO Bulletins (Amount, ArrivalDay, FileName, Month, Year) VALUES (?, ?, ?, ?, ?)", bulletins_data)
     db.close()
 
 if __name__ == "__main__":

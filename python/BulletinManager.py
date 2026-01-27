@@ -13,7 +13,7 @@ class BulletinManager:
         self.bulletins = []
     
     def create_bulletin(self, amount:float, period:tuple, pdf_path:str) -> Bulletin:
-        bulletin = Bulletin(amount, period[0], period[1], os.path.abspath(pdf_path))
+        bulletin = Bulletin(amount, period[0], period[1], os.path.basename(pdf_path))
         self.bulletins.append(bulletin)
 
     def export_bulletins_json(self):
