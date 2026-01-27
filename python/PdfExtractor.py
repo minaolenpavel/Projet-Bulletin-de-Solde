@@ -39,5 +39,6 @@ class PdfExtractor:
             amount = content[5].strip().replace('"', "")
             amount = amount.replace(" ", "")
             amount = amount.replace(",", ".")
+            file.close()
             return float(amount)
 

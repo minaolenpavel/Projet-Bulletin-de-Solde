@@ -15,3 +15,5 @@ class Config:
 
     json_folder  = "bulletins_solde_json"
     debug = True
+
+    db_path = "bulletins2.db"

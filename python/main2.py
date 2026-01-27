@@ -7,9 +7,10 @@ from MonthManager import *
 from config import Config
 import os
 from BulletinManager import BulletinManager
+from DB import *
 
 
-def main(config:Config):
+def get_all(config:Config):
     mailRetriever = MailRetriever(
         config.username,
         config.password,
@@ -38,8 +39,20 @@ def main(config:Config):
             amount, 
             period, 
             bulletin_pdf_path)
-    breakpoint()
-    print()
+    
+    db = DB(config.db_path)
+    db.write("""
+    CREATE TABLE IF NOT EXISTS Bulletins(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        Amount REAL NOT NULL,
+        ArrivalDay INTEGER NOT NULL,
+        FilePath TEXT NOT NULL,
+        Month INTEGER NOT NULL,
+        Year INTEGER NOT NULL)
+    """)
+    bulletins_data = [(b.amount, b.arrival_day, b.file_path, b.month, b.year) for b in bulletin_manager.bulletins]
+    db.write_many("INSERT INTO Bulletins (Amount, ArrivalDay, FilePath, Month, Year) VALUES (?, ?, ?, ?, ?)", bulletins_data)
+    db.close()
 
 if __name__ == "__main__":
     stopwatch = Stopwatch()
@@ -47,6 +60,6 @@ if __name__ == "__main__":
 
     config = Config()
 
-    main(config)
+    get_all(config)
     stopwatch.stop()
     print(f"{stopwatch.total_time} secondes pour éxecuter tout le script")
