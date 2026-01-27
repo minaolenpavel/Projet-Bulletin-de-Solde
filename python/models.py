@@ -73,8 +73,15 @@ class ActivityPeriod:
 
     def __lt__(self, other):
         return self.end_date < other.start_date
+    
+    def __eq__(self, other):
+        if not isinstance(other, ActivityPeriod):
+            return NotImplementedError
+        return (self.start_date == other.start_date and self.end_date == other.end_date)
     def __repr__(self):
         return f"periode du {self.start_date} au {self.end_date}"
+    def __hash__(self):
+        return hash((self.start_date, self.end_date))
     
 class MonthActivity:
     def __init__(self, year:int, month:int):

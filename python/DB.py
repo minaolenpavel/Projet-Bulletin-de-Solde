@@ -16,6 +16,11 @@ class DB:
         cur.executemany(query, rows)
         self.conn.commit()
 
+    def fetch(self, sql, params=()):
+        cur = self.conn.cursor()
+        cur.execute(sql, params)
+        return self.cur.fetchall()
+
     def close(self):
         self.conn.close()
 

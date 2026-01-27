@@ -40,9 +40,37 @@ def get_all(config:Config):
             period, 
             bulletin_pdf_path)
     
+    month_manager = MonthManager(config.csv_folder, config.pdf_folder)
+    month_manager.create_months()
+    for m in month_manager.months:
+        m.calc_days_count()
+    breakpoint()
     db = DB(config.db_path)
-    bulletins_data = [(b.amount, b.arrival_day, b.file_path, b.month, b.year) for b in bulletin_manager.bulletins]
+    bulletins_data = [(b.amount, b.arrival_day, b.filename, b.month, b.year) for b in bulletin_manager.bulletins]
     db.write_many("INSERT INTO Bulletins (Amount, ArrivalDay, FileName, Month, Year) VALUES (?, ?, ?, ?, ?)", bulletins_data)
+
+    month_rows = [(m.year, m.month,m.calc_days_count()) for m in month_manager.months]
+    db.write_many("INSERT INTO MonthActivities (Year, Month, DaysCount) VALUES (?, ?, ?)", month_rows)
+    rows = db.fetch("SELECT Id, Year, Month FROM MonthActivities")
+    month_id_map = {(year, month): id_ for id_, year, month in rows}
+    period_rows = []
+    for m in month_manager.months:
+        month_id = month_id_map[(m.year, m.month)]
+        for p in m.periods:
+            period_rows.append((
+                p.start_date.isoformat(),
+                p.end_date.isoformat(),
+                p.days_count,
+                month_id
+            ))
+    db.write_many(
+    """
+    INSERT INTO ActivityPeriods
+    (StartDate, EndDate, DaysCount, MonthActivityId)
+    VALUES (?, ?, ?, ?)
+    """,
+    period_rows)
+
     db.close()
 
 if __name__ == "__main__":
