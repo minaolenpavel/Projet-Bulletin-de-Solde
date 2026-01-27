@@ -44,7 +44,6 @@ def get_all(config:Config):
     month_manager.create_months()
     for m in month_manager.months:
         m.calc_days_count()
-    breakpoint()
     db = DB(config.db_path)
     bulletins_data = [(b.amount, b.arrival_day, b.filename, b.month, b.year) for b in bulletin_manager.bulletins]
     db.write_many("INSERT INTO Bulletins (Amount, ArrivalDay, FileName, Month, Year) VALUES (?, ?, ?, ?, ?)", bulletins_data)
@@ -65,7 +64,7 @@ def get_all(config:Config):
             ))
     db.write_many(
     """
-    INSERT INTO ActivityPeriods
+    INSERT INTO ActivityPeriod
     (StartDate, EndDate, DaysCount, MonthActivityId)
     VALUES (?, ?, ?, ?)
     """,

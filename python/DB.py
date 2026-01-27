@@ -19,7 +19,7 @@ class DB:
     def fetch(self, sql, params=()):
         cur = self.conn.cursor()
         cur.execute(sql, params)
-        return self.cur.fetchall()
+        return cur.fetchall()
 
     def close(self):
         self.conn.close()

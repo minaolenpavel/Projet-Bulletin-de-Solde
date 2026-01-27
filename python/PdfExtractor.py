@@ -34,11 +34,12 @@ class PdfExtractor:
                 amount = amount.replace(" ","") # Will not be able to convert to float if there is a white space between the thousand and the rest
                 return float(amount.replace(",",".")) # Caprice
         except:
-            file = open(f"{add_backslash(self.csv_folder)}{filename_without_extension(path)}-page-2-table-1.csv", mode = "r",  encoding='utf8')
-            content = file.readlines()
-            amount = content[5].strip().replace('"', "")
-            amount = amount.replace(" ", "")
-            amount = amount.replace(",", ".")
-            file.close()
+            amount = 0
+            with open(f"{add_backslash(self.csv_folder)}{filename_without_extension(path)}-page-2-table-1.csv", mode = "r",  encoding='utf8') as file:
+                content = file.readlines()
+                amount = content[5].strip().replace('"', "")
+                amount = amount.replace(" ", "")
+                amount = amount.replace(",", ".")
+                file.close()
             return float(amount)
 
