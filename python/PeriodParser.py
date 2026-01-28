@@ -1,5 +1,5 @@
 import re, utils, datetime
-from Models import ActivityPeriod
+from models import ActivityPeriod
 
 class PeriodParser:
     """

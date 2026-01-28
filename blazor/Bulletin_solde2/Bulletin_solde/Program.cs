@@ -21,6 +21,7 @@ builder.Services.AddMudServices();
 builder.Services.AddScoped<StatisticsServices>();
 builder.Services.AddScoped<ActivityServices>();
 
+builder.Services.AddHttpClient();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

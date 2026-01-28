@@ -4,22 +4,30 @@ class Bulletin:
     Class that is used to be written in Json for C# communications. 
     \nIn this matter, properties are written according to C# guidelines in order not to create any confusion for the parser.
     '''
-    def __init__(self, amount:float, month:int, year:int, path:str):
-        self.Amount = amount
-        self.Month = month
-        self.Year = year
-        self.FilePath = path # Path to original document
-        self.ArrivalDay = self.get_receving_day()
+    def __init__(self, amount:float, month:int, year:int, filename:str):
+        self.amount = amount
+        self.month = month
+        self.year = year
+        self.filename = filename # Path to original document
+        self.arrival_day = self.get_receving_day()
 
     def get_receving_day(self) -> int:
-        filename = os.path.basename(self.FilePath)
+        filename = os.path.basename(self.filename)
         pattern = r'([0-9]{6})([1-2][0-9])' # First group is year and month 
         d = re.search(pattern, filename)
         return int(d.group(2)) # Second group is the day of arrival  and that's what we want
 
-    
+    def to_dict(self):
+        return {
+            "Amount" : self.amount,
+            "Month" : self.month,
+            "Year" : self.year,
+            "FilePath" : self.filename,
+            "ArrivalDay" : self.arrival_day
+        }
+
     def __repr__(self):
-        return f"Pour la période du {self.Period}, solde de {self.MonthText}, payé {self.Amount}€"
+        return f"Pour la période du {self.Period}, solde de {self.MonthText}, payé {self.amount}€"
     
 class ActivityPeriod:
     def __init__(self):
@@ -65,8 +73,15 @@ class ActivityPeriod:
 
     def __lt__(self, other):
         return self.end_date < other.start_date
+    
+    def __eq__(self, other):
+        if not isinstance(other, ActivityPeriod):
+            return NotImplementedError
+        return (self.start_date == other.start_date and self.end_date == other.end_date)
     def __repr__(self):
         return f"periode du {self.start_date} au {self.end_date}"
+    def __hash__(self):
+        return hash((self.start_date, self.end_date))
     
 class MonthActivity:
     def __init__(self, year:int, month:int):

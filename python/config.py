@@ -14,4 +14,6 @@ class Config:
     csv_folder = "bulletins_solde_csv"
 
     json_folder  = "bulletins_solde_json"
-    debug = False
+    debug = True
+
+    db_path = "../blazor/Bulletin_solde2/Bulletin_solde/bulletins.db"

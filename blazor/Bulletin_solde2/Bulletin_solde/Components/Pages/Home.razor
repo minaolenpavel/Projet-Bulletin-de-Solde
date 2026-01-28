@@ -27,7 +27,7 @@
             {
                 <BulletinsLineChart bulletins="@bulletins"></BulletinsLineChart>
             }
-            else if (selectedMode == VisualisationModes.Month)
+            else if (selectedMode == VisualisationModes.Days)
             {
                 @foreach (MonthActivity month in monthActivities)
                 {
@@ -108,10 +108,6 @@
         if(selectedMode == VisualisationModes.Bulletin)
         {
             lineChartTitle = "Visualisation de tous les bulletins de solde";
-        }
-        else if(selectedMode == VisualisationModes.Month)
-        {
-            lineChartTitle = "Visualisation des paiements par mois";
         }
         else if(selectedMode == VisualisationModes.Days)
         {

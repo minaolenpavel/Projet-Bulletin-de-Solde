@@ -1,11 +1,11 @@
-from Models import ActivityPeriod, MonthActivity
+from models import ActivityPeriod, MonthActivity
 from PeriodParser import *
 import json
 
 class MonthManager:
-    def __init__(self, csv_folder:str, pdf_folder:str, filename:str, export_path:str):
-        self.filename_export = filename
-        self.export_path = export_path 
+    def __init__(self, csv_folder:str, pdf_folder:str):
+        #self.filename_export = filename
+        #self.export_path = export_path 
         self.csv_folder = csv_folder
         self.filenames = utils.list_files(pdf_folder)
         self.months = []
@@ -34,6 +34,8 @@ class MonthManager:
                 month = MonthActivity(p.start_date.year, p.start_date.month)
                 month.periods.append(p)
                 self.months.append(month)
+        for m in self.months:
+            m.periods = list(set(m.periods))
     
     def calc_days(self):
         total = 0

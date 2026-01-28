@@ -10,7 +10,7 @@ namespace Bulletin_solde.Data.Models
         public int Year { get; set; }
         public int Month { get; set; }
         public double Amount { get; set; }
-        public string FilePath { get; set; }
+        public string FileName { get; set; }
         public int ArrivalDay { get; set; }
 
         [NotMapped] // EF Core ignores this field
