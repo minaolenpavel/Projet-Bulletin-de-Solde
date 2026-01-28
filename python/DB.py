@@ -6,22 +6,22 @@ class DB:
         self.db_path = db_path
         self.conn = sqlite3.connect(self.db_path)
 
-    def write(self, query:str, params=()):
+    def write(self, query:str, params=()) -> None:
         cur = self.conn.cursor()
         cur.execute(query, params)
         self.conn.commit()
 
-    def write_many(self, query:str, rows):
+    def write_many(self, query:str, rows) -> None:
         cur = self.conn.cursor()
         cur.executemany(query, rows)
         self.conn.commit()
 
-    def fetch(self, sql, params=()):
+    def fetch(self, sql, params=()) -> list:
         cur = self.conn.cursor()
         cur.execute(sql, params)
         return cur.fetchall()
 
-    def close(self):
+    def close(self) -> None:
         self.conn.close()
 
 

@@ -35,11 +35,10 @@ class MailRetriever:
         if status != "OK":
             return []
         return mail_ids[0].split() # Important to precise [0] because it's a single element list, error otherwise
-    
-    def download_payslips(self, download_folder:str) -> str:
+
+    def download_missing_payslips(self, download_folder:str, current_payslips):
         if not self.connect():
             raise ConnectionError("Error connecting to mailbox")
-        
         mail_ids = self.fetch_messages()
         for mail_id in mail_ids:
             # Récupère le mail pour l'id donnée
@@ -55,12 +54,17 @@ class MailRetriever:
                     filename = part.get_filename()
                     # Vérification si c'est un PDF
                     if filename and filename.lower().endswith(".pdf"):
-                        # Téléchargement du fichier
-                        filepath = os.path.join(download_folder, filename)
-                        with open(filepath, "wb") as f:
-                            f.write(part.get_payload(decode=True))
-                        if self.debug:
-                            print(f" -> PDF téléchargé : {filename}")
+                        if filename in current_payslips:
+                            if self.debug:
+                                print(f"{filename} already in DB")
+                        else:
+                            if self.debug:
+                                print(f"{filename} not in DB")
+                            filepath = os.path.join(download_folder, filename)
+                            with open(filepath, "wb") as f:
+                                f.write(part.get_payload(decode=True))
+                            if self.debug:
+                                print(f" -> PDF téléchargé : {filename}")
 
     def print_emails_content(self) -> None:
         if not self.connect():
