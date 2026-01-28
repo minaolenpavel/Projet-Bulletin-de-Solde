@@ -30,6 +30,9 @@ def get_missing(config:Config):
     bulletins_pdf_paths = list_files(config.pdf_folder)
     bulletins_pdf_paths = [p for p in bulletins_pdf_paths if os.path.basename(p) not in db_payslips_filenames]
     if len(bulletins_pdf_paths) == 0:
+        if config.debug:
+            print("Nothing new")
+    else:
         for bulletin_pdf_path in bulletins_pdf_paths:
             parse_pdf_to_csv(
                 bulletin_pdf_path,
