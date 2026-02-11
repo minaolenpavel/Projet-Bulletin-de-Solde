@@ -27,7 +27,7 @@ class Bulletin:
         }
 
     def __repr__(self):
-        return f"Pour la période du {self.Period}, solde de {self.MonthText}, payé {self.amount}€"
+        return f"Pour la période du mois {self.month}/{self.year}, payé {self.amount}€"
     
 class ActivityPeriod:
     def __init__(self):

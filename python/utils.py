@@ -46,7 +46,7 @@ def is_valid_json(data:str) -> bool:
     except:
         return False
 
-def write_json(filename:str, data:str, folder_path:str):
+def write_json(filename:str, data:str, folder_path:str = "./"):
     if not is_valid_json(data):
         print("data is not json")
     else:

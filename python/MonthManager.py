@@ -3,9 +3,9 @@ from PeriodParser import *
 import json
 
 class MonthManager:
-    def __init__(self, csv_folder:str, pdf_folder:str):
-        #self.filename_export = filename
-        #self.export_path = export_path 
+    def __init__(self, csv_folder:str, pdf_folder:str, filename:str = "exported_activity", export_path:str = "./"):
+        self.filename_export = filename
+        self.export_path = export_path 
         self.csv_folder = csv_folder
         self.filenames = utils.list_files(pdf_folder)
         self.months = []

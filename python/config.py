@@ -17,3 +17,5 @@ class Config:
     debug = True
 
     db_path = "../blazor/Bulletin_solde2/Bulletin_solde/bulletins.db"
+
+    processed_files_list_path = "./processed_files.json"

@@ -1,4 +1,4 @@
-import re
+import re, gc
 from utils import filename_without_extension, add_backslash
 
 class PdfExtractor:
@@ -19,6 +19,8 @@ class PdfExtractor:
             period = m.group()
             month = m.group(1)
             year = m.group(2)
+            file.close()
+            gc.collect()
             return (int(month), int(year))
         
     def get_amount(self, path:str) -> float:
@@ -32,6 +34,8 @@ class PdfExtractor:
                 m = re.search(pattern, content)
                 amount = m.group(2) # Capture group 2 is the total amount, other capture groups aren't relevant
                 amount = amount.replace(" ","") # Will not be able to convert to float if there is a white space between the thousand and the rest
+                file.close()
+                gc.collect()
                 return float(amount.replace(",",".")) # Caprice
         except:
             amount = 0
@@ -40,6 +44,7 @@ class PdfExtractor:
                 amount = content[5].strip().replace('"', "")
                 amount = amount.replace(" ", "")
                 amount = amount.replace(",", ".")
+                gc.collect()
                 file.close()
             return float(amount)
 
