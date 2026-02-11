@@ -9,8 +9,11 @@ import os
 from BulletinManager import BulletinManager
 
 def retrieve_processed_files(processed_files_path: str):
-    if not os.path.exists(processed_files_path):
-        return None
+    if not os.path.exists(processed_files_path) or os.path.getsize(processed_files_path) <= 2:
+        with open(processed_files_path, "w", encoding='utf-8') as file:
+            file.close()
+            gc.collect()
+        return []
     with open(processed_files_path, 'r', encoding='utf-8') as file:
         processed_files_list = json.load(file)
     return processed_files_list
@@ -58,7 +61,6 @@ def get_months(config:Config):
     month_manager.create_months()
     for m in month_manager.months:
         m.calc_days_count()
-    print(month_manager)
     month_manager.export_months_json()
 
 if __name__ == "__main__":
